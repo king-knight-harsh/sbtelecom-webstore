@@ -1,0 +1,39 @@
+{
+  "name": "sb_telecom_webstore",
+  "version": "1.0.0",
+  "description": "This is electronic webstore for the S.B. Telecom, India",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/23harsh2000/web_test.git"
+  },
+  "author": "Harsh and Maria",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/23harsh2000/web_test/issues"
+  },
+  "homepage": "https://github.com/23harsh2000/web_test#readme",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-jwt": "^6.1.1",
+    "express-validator": "^6.14.0",
+    "formidable": "^3.2.1",
+    "i": "^0.3.7",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.2.6",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "nodemon": "^2.0.15",
+    "swagger-ui-express": "^4.3.0",
+    "uuid": "^8.3.2",
+    "yamljs": "^0.3.0"
+  }
+}
