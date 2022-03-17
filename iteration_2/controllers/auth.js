@@ -1,5 +1,8 @@
 const User = require("../models/user");
-const { check, validationResult } = require("express-validator");
+const {
+  check,
+  validationResult
+} = require("express-validator");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
 
@@ -29,7 +32,10 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   const errors = validationResult(req);
-  const { email, password } = req.body;
+  const {
+    email,
+    password
+  } = req.body;
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -37,7 +43,9 @@ exports.signin = (req, res) => {
     });
   }
 
-  User.findOne({ email }, (err, user) => {
+  User.findOne({
+    email
+  }, (err, user) => {
     if (err || !user) {
       return res.status(400).json({
         error: "User email does not exist",
@@ -49,13 +57,30 @@ exports.signin = (req, res) => {
       });
     }
     // Creating token
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
+    const token = jwt.sign({
+      _id: user._id
+    }, process.env.JWT_KEY);
     // Put token in cookie
-    res.cookie("token", token, { expire: new Date() + 9999 });
+    res.cookie("token", token, {
+      expire: new Date() + 9999
+    });
 
     // send response to front end
-    const { _id, firstName, email, role } = user;
-    return res.json({ token, user: { _id, firstName, email, role } });
+    const {
+      _id,
+      firstName,
+      email,
+      role
+    } = user;
+    return res.json({
+      token,
+      user: {
+        _id,
+        firstName,
+        email,
+        role
+      }
+    });
   });
 };
 

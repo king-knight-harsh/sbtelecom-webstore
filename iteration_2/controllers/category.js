@@ -1,16 +1,15 @@
 const Category = require("../models/category");
 
 exports.getCategoryById = (req, res, next, id) => {
-  Category.findById(id).
-    exec((err, cate) => {
-      if (err) {
-        return res.status(404).json({
-          error: "Category not found in the Database",
-        });
-      }
-      req.category = cate;
-      next();
-    });
+  Category.findById(id).exec((err, cate) => {
+    if (err) {
+      return res.status(404).json({
+        error: "Category not found in the Database",
+      });
+    }
+    req.category = cate;
+    next();
+  });
 };
 
 exports.createCategory = (req, res) => {
@@ -21,7 +20,9 @@ exports.createCategory = (req, res) => {
         error: "NOT able to save category",
       });
     }
-    res.json({ category });
+    res.json({
+      category
+    });
   });
 };
 
@@ -56,7 +57,7 @@ exports.updateCategory = (req, res) => {
 
 exports.removeCategory = (req, res) => {
   const category = req.category;
-  
+
   category.remove((err, category) => {
     if (err) {
       return res.status(404).json({

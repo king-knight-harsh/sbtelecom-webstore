@@ -22,10 +22,14 @@ exports.getUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  User.findByIdAndUpdate(
-    { _id: req.profile._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
+  User.findByIdAndUpdate({
+      _id: req.profile._id
+    }, {
+      $set: req.body
+    }, {
+      new: true,
+      useFindAndModify: false
+    },
     (err, user) => {
       if (err) {
         return res.status(400).json({
@@ -38,7 +42,9 @@ exports.updateUser = (req, res) => {
 };
 
 exports.userPurchaseList = (req, res) => {
-  Order.find({ user: req.profile._id })
+  Order.find({
+      user: req.profile._id
+    })
     .populate("user", "_id firstName email")
     .exec((err, order) => {
       return res.status(400).json({
@@ -62,15 +68,20 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
     });
   });
   //Store in the Database
-  User.findOneAndUpdate(
-    { _id: req.profile._id },
-    { $push: { purchases: purchases } },
-    { new: true },
+  User.findOneAndUpdate({
+      _id: req.profile._id
+    }, {
+      $push: {
+        purchases: purchases
+      }
+    }, {
+      new: true
+    },
     (err, purchases) => {
-      if(err){
+      if (err) {
         return res.status(400).json({
-          error: "Unable to save the purchase list"
-        })
+          error: "Unable to save the purchase list",
+        });
       }
     }
   );
