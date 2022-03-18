@@ -49,8 +49,8 @@ exports.signUp = (req, res) => {
       });
     }
     res.json({
-      name: user.name,
-      email: user.email,
+      Name: user.firstName,
+      Email: user.email,
       id: user._id,
     });
   });
@@ -81,13 +81,13 @@ exports.signIn = (req, res) => {
   }, (err, user) => {
     //Error response if error occur or no user is found
     if (err || !user) {
-      return res.status(400).json({
+      return res.status(404).json({
         error: "User email does not exist",
       });
     }
     //Error response if the authentication of the user fails
     if (!user.authenticate(password)) {
-      return res.status(401).json({
+      return res.status(400).json({
         error: "Email and password do not match",
       });
     }

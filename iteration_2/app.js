@@ -27,7 +27,7 @@ const app = express();
 // Loading the swagger.yaml file
 const swaggerDocument = YAML.load("./swagger.yaml");
 
-// Importing the authenication routes
+// Importing the authentication routes
 const authRoutes = require("./routes/auth");
 // Importing the user routes
 const userRoutes = require("./routes/user");
@@ -51,12 +51,12 @@ mongoose
     console.error(err);
   });
 
-// Using the Middlewares -> bodyParser, cookieParser and cors
+// Using the MiddleWares -> bodyParser, cookieParser and cors
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 //Using the /api-docs route to run the documentation part
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Using the the authentication routes
 app.use("/api", authRoutes);
@@ -76,3 +76,5 @@ const port = process.env.PORT || 8000;
 app.listen(port, () => {
   console.log(`APP IS RUNNING AT http://localhost:${port}/`);
 });
+
+module.exports = app;

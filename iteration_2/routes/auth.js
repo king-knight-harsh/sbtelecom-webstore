@@ -46,21 +46,16 @@ router.post(
   "/signIn",
   [ //Validating the email
     check("email", "email is required").isEmail(),
-    //Checking if the password enter meet all the requirements
-    check(
-      "password",
-      `Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.`
-    )
-      .isLength({
-        min: 8,
-      })
-      .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/),
   ],
   signIn
 );
 
 // Get route for the signOut for the signIn User
 router.get("/signOut", signOut);
+
+router.get("/isSignedIn",isSignedIn,(req,res)=>{
+  res.send("It's a protected route")
+})
 
 //Exporting the router
 module.exports = router;

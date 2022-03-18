@@ -1,11 +1,11 @@
 openapi: "3.0.0"
 info:
-  title: Documentation for the electronic webstore - S.B. Telecom
+  title: Documentation for the electronic web store - S.B. Telecom
   description: Segment about writing documentation
   version: 1.0.1
   contact:
     email: hsharma@mun.ca
-    url: "sbtelecom.com"
+    url: "www.sbtelecom.com"
 
 # servers:
 #   - url: "http://localhost:4000/api/v1"
@@ -14,7 +14,7 @@ info:
 #     description: for localhost -secure
 
 servers:
-  - url: "{protocol}://localhost:8000/api"
+  - url: "{protocol}://localhost:8000/"
     description: for localhost
     variables:  
       protocol:
@@ -32,51 +32,114 @@ components:
     BearerAuth:
       type: http       
       scheme: bearer
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string  
+        email:
+          type: string
+        phoneNumber:
+          type: number
+        password:
+          type: string
+
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        stock:
+          type: boolean
+        photo:
+          type: Buffer
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
+
+    Order:
+      type: object
+      properties:
+        products:
+          type: array
+        amount:
+          type: number
+        address:
+          type: string
+        status:
+          type: ["Cancelled,", "Delivered,", "Shipped,", "Processing,", "Received"]
+    
+    
+security:
+  - bearerAuth: [] 
+    
+
 
 paths:
-  /signup: 
+  /api/signUp: 
     post:
       tags:
         - String
       summary: Adds a new user to the database
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      requestBody: 
-        required : true
+      requestBody:
+        required: true
         content:
-          application/json :
-            schema:  
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string  
-                email:
-                  type: string
-                phoneNumber:
-                  type: number
-                password:
-                  type: string
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses: 
         200:
-          description: "All Good and successful"
+          description: "User created successfully"
           content:
             application/json:
               schema: 
-                type: string
-        400:
-          description: "Bad Request"      
-        500:
-          description: "Internal Server Error"  
+                type: string  
 
-  /signin: 
+  /api/signIn: 
+    post:
+      tags:
+        - String
+      summary: SignIn in the website
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      
+      responses: 
+        200:
+          description: "User logged in successfully"
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  email:
+                    type: string
+                  password:
+                    type: string   
+  /api/signOut: 
     get:
       tags:
         - String
-      summary: Signin in the website
+      summary: SignOut the user out of the website
       consumes:
         - application/json
       produces:
@@ -88,11 +151,10 @@ paths:
         - name: password
           required: true
           in: string
-        
       
       responses: 
         200:
-          description: "All Good and successful"
+          description: "User logged out successfully"
           content:
             application/json:
               schema: 
@@ -101,8 +163,39 @@ paths:
                   email:
                     type: string
                   password:
+                    type: string   
+
+  /api/isSignedIn: 
+    get:
+      tags:
+        - String
+      summary: Middleware to test if user is signed In or not
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          required: true
+          in: string
+        - name: password
+          required: true
+          in: string
+      
+      
+      responses: 
+        200:
+          description: "User logged out successfully"
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  email:
                     type: string
-        400:
-          description: "Bad Request"      
-        500:
-          description: "Internal Server Error"         
+                  password:
+                    type: string   
+
+   
