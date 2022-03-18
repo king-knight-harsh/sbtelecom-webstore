@@ -14,8 +14,9 @@ let Order = require("../models/order");
 chai.should();
 
 chai.use(chaiHttp);
-
-describe("Authentication API", () => {
+let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjMzZmEwNjkwODlmZWZlYzlkZDlhMTYiLCJpYXQiOjE2NDc2Mjk2NjZ9._6xdmyzgag7sZ6ma4m2PqTtdOcBUwuLzvmKo9lXIHro'
+let userId = '6233fa069089fefec9dd9a16'
+describe(" Authentication API", () => {
 
     /**
      * Test the signUP route
@@ -81,7 +82,6 @@ describe("Authentication API", () => {
         it("User and password does not match", (done) => {
             chai
                 .request('http://localhost:8000')
-                
                 .post("/api/signIn")
                 .send({
                         email:"hs@mun.ca",
@@ -102,7 +102,6 @@ describe("Authentication API", () => {
         it("Testing for actual logout of the user for the website", (done) => {
             chai
                 .request('http://localhost:8000')
-                
                 .post("/api/signIn")
                 .send({
                         email:"hs@mun.ca",
@@ -113,5 +112,61 @@ describe("Authentication API", () => {
                     done();
                 });
         });
-     });
+    });
+});
+
+/**
+* Test the product route
+*/
+describe("Product API", () => {
+    
+    describe("GET /api/products", () => {
+        it("Get all the product from the database", (done) => {
+            chai
+                .request('http://localhost:8000')
+                .get("/api/products")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    done();
+                });
+        });
+    });
+
+    
+});
+
+/**
+* Test the all categories route
+*/
+describe("Category API", () => {
+    
+    describe("GET /api/categories", () => {
+        it("Get all the categories from the database", (done) => {
+            chai
+                .request('http://localhost:8000')
+                .get("/api/categories")
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    done();
+                });
+        });
+    });
+
+    describe("POST /api/category/create/:userId", () => {
+        it("Create a new product and storing it in the database", (done) => {
+            chai
+                .request('http://localhost:8000')
+                .post(`/api/category/create/${userId}`)
+                .auth(token, { type: 'bearer' })
+                .send({
+                    name:"TEST1"                   
+                })
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    done();
+                });
+        });
+    });
+
+    
 });
