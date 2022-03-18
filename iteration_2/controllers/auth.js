@@ -1,21 +1,47 @@
+/**
+ * Script with logic to the following routes:
+ * signIn, signOut, signUp
+ */
+
+
+//Importing User schema from models 
 const User = require("../models/user");
+//Importing express-validator 
 const {
   check,
   validationResult
 } = require("express-validator");
+//Importing jsonwebtoken
 var jwt = require("jsonwebtoken");
+//Importing express-jsonwebtoken 
 var expressJwt = require("express-jwt");
 
-exports.signup = (req, res) => {
+/**
+ * Call back module for signUp logic
+ * @param {*} req - request from client side 
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to save user in the database
+ * @return user: Successful attempt - JSON response with name, email address and id for the user 
+ */
+exports.signUp = (req, res) => {
+  // Validating the request
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
+    // returning Unprocessable Entity error
     return res.status(422).json({
       error: errors.array()[0].msg,
     });
   }
-
+  //Creating new User model
   const user = new User(req.body);
+  /**
+   * Method to save the user in the Database
+   * @param err: Error if any error occur while saving process
+   * @param user: User object with user information
+   * @return err: Unsuccessful attempt to save user in the database
+   * @return user: Successful attempt - JSON response with name, email address and id for the user
+   */
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -29,49 +55,59 @@ exports.signup = (req, res) => {
     });
   });
 };
-
-exports.signin = (req, res) => {
+/**
+ * Call back method to validate the user 
+ * @param {*} req - request from client side 
+ * @param {*} res - response from the server side
+ * @returns custom JSON response with user details
+ */
+exports.signIn = (req, res) => {
+  //Validating the request
   const errors = validationResult(req);
+  // destructure the variable  
   const {
     email,
     password
   } = req.body;
-
+  // returning Unprocessable Entity error
   if (!errors.isEmpty()) {
     return res.status(422).json({
       error: errors.array()[0].msg,
     });
   }
-
+  // Finding particular user
   User.findOne({
     email
   }, (err, user) => {
+    //Error response if error occur or no user is found
     if (err || !user) {
       return res.status(400).json({
         error: "User email does not exist",
       });
     }
+    //Error response if the authentication of the user fails
     if (!user.authenticate(password)) {
       return res.status(401).json({
         error: "Email and password do not match",
       });
     }
-    // Creating token
+    // Creating token 
     const token = jwt.sign({
       _id: user._id
-    }, process.env.JWT_KEY);
+    }, process.env.JWT_KEY);//getting the string from the .env file
     // Put token in cookie
     res.cookie("token", token, {
-      expire: new Date() + 9999
+      expire: new Date() + 9999 //for testing purpose only
     });
 
-    // send response to front end
+    // send custom response to front end with successful response
     const {
       _id,
       firstName,
       email,
       role
     } = user;
+    // returning the json response with user's _id, firstName, email and role
     return res.json({
       token,
       user: {
@@ -83,21 +119,34 @@ exports.signin = (req, res) => {
     });
   });
 };
-
-exports.signout = (req, res) => {
+/**
+ * Callback method for signing out of the website
+ * @param {*} req - request from client side 
+ * @param {*} res - response from the server side 
+ */
+exports.signOut = (req, res) => {
   res.clearCookie("token");
   res.json({
-    message: "User signout successfully",
+    message: "User signOut successfully",//response for successful signOut
   });
 };
 
-//protected routes
+/**
+ * Middleware to check if user is signIn or not 
+ */
 exports.isSignedIn = expressJwt({
-  secret: process.env.JWT_KEY,
+  secret: process.env.JWT_KEY,//string for creating the token using string in .env file
   userProperty: "auth",
-  algorithms: ["HS256"],
+  algorithms: ["HS256"],//algorithm for creating the token
 });
 
+/**
+ * Middleware to check if user is properly authenticated 
+ * @param {*} req - request from client side 
+ * @param {*} res - response from the server side 
+ * @param {*} next - jumping to the next middleware or method
+ * @returns error - Error json response about the unsuccessful attempt
+ */
 exports.isAuthenticated = (req, res, next) => {
   let authenticationChecker =
     req.profile && req.auth && req.profile._id == req.auth._id;
@@ -106,9 +155,15 @@ exports.isAuthenticated = (req, res, next) => {
       error: "ACCESS DENIED",
     });
   }
-  next();
+  next();//jumping to the next method or middleware
 };
-
+/**
+ * Middleware to check if user is admin (role = 1)
+ * @param {*} req - request from client side 
+ * @param {*} res - response from the server side 
+ * @param {*} next - jumping to the next middleware or method
+ * @returns error - Error json response if not a admin
+ */
 exports.isAdmin = (req, res, next) => {
   if (req.profile.role === 0) {
     return res.status(403).json({

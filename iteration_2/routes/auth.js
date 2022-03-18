@@ -1,45 +1,66 @@
+/**
+ * Script with all routes related to authentication:
+ * /api/signup - route for signup new user
+ * /api/signIn - route for signIn the user
+ * /api/signOut - route for signOut the user
+ */
+
+//Importing the express library
 var express = require("express");
+//Using the routers for the router
 var router = express.Router();
-const {
-  signout,
-  signup,
-  signin,
-  isSignedIn
-} = require("../controllers/auth");
-const {
-  check,
-  validationResult
-} = require("express-validator");
+//Using the signOut, signIn, signUp and isSignedIn modules from auth controllers
+const { signOut, signUp, signIn, isSignedIn } = require("../controllers/auth");
+// Importing the express-validator
+const { check, validationResult } = require("express-validator");
 
+//Post request for signUp route
 router.post(
-  "/signup",
-  [
-    check("firstName", "name should be atleast 3 characters").isLength({
+  "/signUp",
+  [ //checking user first name at least 3 characters
+    check("firstName", "name should be at least 3 characters").isLength({
       min: 3,
     }),
+    //checking email provided is actual email
     check("email", "email is required").isEmail(),
-    check("password", "password should be atleast 3 character").isLength({
-      min: 3,
-    }),
+    //Checking if the password enter meet all the requirements
+    check(
+      "password",
+      `Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.`
+    )
+      .isLength({
+        min: 8,
+      })
+      .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/),
+    //checking the phone number is numeric and at least 10 
+    check("phoneNumber", "Phone number should be 10 number only")
+      .isNumeric()
+      .isLength({ min: 10, max: 10 }),//phone number is exactly 10 numbers
   ],
-  signup
+  signUp
 );
-
+/**
+ * Post route for signIn routes
+ */
 router.post(
-  "/signin",
-  [
+  "/signIn",
+  [ //Validating the email
     check("email", "email is required").isEmail(),
-    check("password", "password field is required").isLength({
-      min: 3
-    }),
+    //Checking if the password enter meet all the requirements
+    check(
+      "password",
+      `Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.`
+    )
+      .isLength({
+        min: 8,
+      })
+      .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$.!%*#?&]/),
   ],
-  signin
+  signIn
 );
 
-router.get("/signout", signout);
+// Get route for the signOut for the signIn User
+router.get("/signOut", signOut);
 
-router.get("/testroute", isSignedIn, (req, res) => {
-  res.json(req.auth);
-});
-
+//Exporting the router
 module.exports = router;
