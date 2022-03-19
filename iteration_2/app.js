@@ -1,9 +1,7 @@
-/** 
- * Script to import all the required packages, middleware, models 
+/**
+ * Script to import all the required packages, middleware, models
  * Script to create express server and connecting to the mongoDB server
-*/ 
-
-
+ */
 
 //Importing dotenv
 require("dotenv").config();
@@ -21,6 +19,8 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 // Importing yamljs to write swagger.yaml document
 const YAML = require("yamljs");
+// Importing the database from utils
+const database = require("./utils/database");
 
 //Calling express
 const app = express();
@@ -38,43 +38,57 @@ const productRoutes = require("./routes/product");
 // Importing the order routes
 const orderRoutes = require("./routes/order");
 
-//Database connection using mongoose
-mongoose
-  //location of the database is coming through .env file
-  .connect(process.env.DATABASE)
-  // logging the successful connection of the database in the console
-  .then(() => {
-    console.log("DB CONNECTED");
-  })
-  // logging the errors
-  .catch((err) => {
-    console.error(err);
+var server 
+
+function createServer() {
+  try {
+    
+    database.connectToDB()
+    // Using the MiddleWares -> bodyParser, cookieParser and cors
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+    app.use(cors());
+    //Using the /api-docs route to run the documentation part
+    app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+    // Using the the authentication routes
+    app.use("/api", authRoutes);
+    // Using the the user routes
+    app.use("/api", userRoutes);
+    // Using the the category routes
+    app.use("/api", categoryRoutes);
+    // Using the the product routes
+    app.use("/api", productRoutes);
+    // Using the the order routes
+    app.use("/api", orderRoutes);
+
+    //Storing the port number in the variable port
+    const port = process.env.PORT || 8000;
+
+    //Logging the main routes to the website and website documentation
+    server = app.listen(port, () => {
+      console.log(`APP IS RUNNING AT http://localhost:${port}/`);
+      console.log(`DOCUMENTATION IS ACCESSIBLE AT http://localhost:${port}/api/docs/`);
+    });
+  } catch (err) {
+    console.err(err);
+  }
+}
+
+/**
+ * Method helps to close the mongoDB connection properly
+ * when clicked CTRL+C and avoid to use all are computer 
+ * resources
+ */
+process.on('SIGINT', () => {
+  console.info('\nSIGINT signal received.');
+  console.log('Closing Mongo Client.');
+  server.close(async function(){
+    let msg = await database.closeDBConnection();
+    console.log(msg);
   });
-
-// Using the MiddleWares -> bodyParser, cookieParser and cors
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(cors());
-//Using the /api-docs route to run the documentation part
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Using the the authentication routes
-app.use("/api", authRoutes);
-// Using the the user routes
-app.use("/api", userRoutes);
-// Using the the category routes
-app.use("/api", categoryRoutes);
-// Using the the product routes
-app.use("/api", productRoutes);
-// Using the the order routes
-app.use("/api", orderRoutes);
-
-//Storing the port number in the variable port
-const port = process.env.PORT || 8000;
-
-//Logging the main routes to the website
-app.listen(port, () => {
-  console.log(`APP IS RUNNING AT http://localhost:${port}/`);
 });
 
+
+createServer();
 module.exports = app;
