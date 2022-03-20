@@ -166,7 +166,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
                     .post(`/api/category/create/${userId}`)
                     .auth(token, { type: 'bearer' })
                     .send({
-                        name:"TEST1"                   
+                        name:"TEST2"                   
                     })
                     .end((err, response) => {
                         response.should.have.status(200);

@@ -7,10 +7,11 @@ const {
   Order,
   ProductCart
 } = require("../models/order");
-
+//Importing common code snippet from common.js
+const customError = require("../utils/common");
 /**
  * Middleware for getting the order by particular order id
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @param {*} next - jumping to the next middleware or method
  * @return err: Unsuccessful attempt to save user in the database
@@ -23,18 +24,16 @@ exports.getOrderById = (req, res, next) => {
     .exec((err, order) => {
       if (err) {
         // returning bad request error with json response
-        return res.status(400).json({
-          error: "No order found in DB",
-        });
+        return customError.customErrorMessage(res, 404, "No order found in DB");
       }
       req.order = order;
-      next();//jumping to the next method or middleware
+      next(); //jumping to the next method or middleware
     });
 };
 
 /**
  * Callback method for creating a new order
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @return err: Unsuccessful attempt to save user in the database
  * @return order: Successful attempt - JSON response with details related to the order
@@ -52,15 +51,18 @@ exports.createOrder = (req, res) => {
   order.save((err, order) => {
     // returning bad request error with json response
     if (err) {
-      return res.status(400).json({
-        error: "Failed to save your order in DB",
-      });
+      //returning the custom error message and status code with json response
+      return customError.customErrorMessage(
+        res,
+        400,
+        "Failed to save your order in DB"
+      );
     }
   });
 };
 /**
  * Callback method for getting all the order
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @return err: Unsuccessful attempt to save user in the database
  * @return order: Successful attempt - JSON response with details related to the order
@@ -72,17 +74,20 @@ exports.getAllOrders = (req, res) => {
     .exec((err, order) => {
       // returning bad request error with json response
       if (err) {
-        return res.status(400).json({
-          error: "NO orders found in DB",
-        });
+        //returning the custom error message and status code with json response
+        return customError.customErrorMessage(
+          res,
+          400,
+          "NO orders found in DB"
+        );
       }
-      res.json(order);//json response with details related to the order
+      res.json(order); //json response with details related to the order
     });
 };
 
 /**
  * Callback method for getting the status of the order
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @return order: Successful attempt - JSON response with details related to the order
  */
@@ -92,27 +97,29 @@ exports.getOrderStatus = (req, res) => {
 
 /**
  * Callback method for updating the status of the order
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @return err: Unsuccessful attempt to save user in the database
  * @return order: Successful attempt - JSON response with details related to the order
  */
 exports.updateStatus = (req, res) => {
   Order.update({
-      _id: req.body.orderId
+      _id: req.body.orderId,
     }, {
       $set: {
-        status: req.body.status
-      }
+        status: req.body.status,
+      },
     },
     (err, order) => {
       if (err) {
-        // returning bad request error with json response
-        return res.status(400).json({
-          Error: "Cannot update the order status",
-        });
+        //returning the custom error message and status code with json response
+        return customError.customErrorMessage(
+          res,
+          400,
+          "Cannot update the order status"
+        );
       }
-      res.json(order);//json response with details related to the order
+      res.json(order); //json response with details related to the order
     }
   );
 };

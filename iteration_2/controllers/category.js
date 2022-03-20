@@ -6,20 +6,23 @@
 
 //Importing the express library
 const Category = require("../models/category");
-
+//Importing common code snippet from common.js
+const customError = require("../utils/common");
 /**
  * Middleware to get a particular category using category._id
- * @param {*} req - request from client side 
- * @param {*} res - response from the server side 
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
  * @param {*} next - jumping to the next middleware or method
  * @returns error - Error json response about the unsuccessful attempt
  */
 exports.getCategoryById = (req, res, next, id) => {
   Category.findById(id).exec((err, cate) => {
     if (err) {
-      return res.status(404).json({
-        error: "Category not found in the Database",
-      });
+      return customError.customErrorMessage(
+        res,
+        404,
+        "Category not found in the Database"
+      );
     }
     req.category = cate;
     next();
@@ -27,7 +30,7 @@ exports.getCategoryById = (req, res, next, id) => {
 };
 /**
  * Call back method create a new category
- * @param {*} req - request from client side 
+ * @param {*} req - request from client side
  * @param {*} res - response from the server side
  * @returns custom JSON response with user details
  */
@@ -44,21 +47,23 @@ exports.createCategory = (req, res) => {
   category.save((err, category) => {
     if (err) {
       //returning if not found error code with json response
-      return res.status(404).json({
-        error: "NOT able to save category",
-      });
+      return customError.customErrorMessage(
+        res,
+        404,
+        "NOT able to save category"
+      );
     }
-    //json response 
+    //json response
     res.json({
-      category
+      category,
     });
   });
 };
 
 /**
-* Call back method get a category from the database
- * @param {*} req - request from client side 
- * @param {*} res - response from the server side 
+ * Call back method get a category from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
  * @returns json response with details related to category
  */
 exports.getCategory = (req, res) => {
@@ -66,18 +71,16 @@ exports.getCategory = (req, res) => {
 };
 
 /**
-* Call back method get all categories from the database
- * @param {*} req - request from client side 
- * @param {*} res - response from the server side 
+ * Call back method get all categories from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
  * @returns json response with details related to category
  */
 exports.getAllCategory = (req, res) => {
   Category.find().exec((err, categories) => {
     if (err) {
       //returning if not found error code with json response
-      return res.status(404).json({
-        error: "No categories found",
-      });
+      return customError.customErrorMessage(res, 404, "No categories found");
     }
     // json response with details related to category
     res.json(categories);
@@ -85,9 +88,9 @@ exports.getAllCategory = (req, res) => {
 };
 
 /**
-* Call back method to update a category from the database
- * @param {*} req - request from client side 
- * @param {*} res - response from the server side 
+ * Call back method to update a category from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
  * @returns json response with details related to category
  */
 exports.updateCategory = (req, res) => {
@@ -104,9 +107,11 @@ exports.updateCategory = (req, res) => {
   category.save((err, updateCategory) => {
     if (err) {
       //returning if not found error code with json response
-      return res.status(404).json({
-        error: "Failed to update category",
-      });
+      return customError.customErrorMessage(
+        res,
+        404,
+        "Failed to update category"
+      );
     }
     // json response with updated details related to category
     res.json(updateCategory);
@@ -114,9 +119,9 @@ exports.updateCategory = (req, res) => {
 };
 
 /**
-* Call back method to remove a category from the database
- * @param {*} req - request from client side 
- * @param {*} res - response from the server side 
+ * Call back method to remove a category from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
  * @returns json response with details related to category
  */
 exports.removeCategory = (req, res) => {
@@ -130,9 +135,11 @@ exports.removeCategory = (req, res) => {
    */
   category.remove((err, category) => {
     if (err) {
-      return res.status(404).json({
-        error: `Failed to delete category: ${category.name}`,
-      });
+      return customError.customErrorMessage(
+        res,
+        404,
+        `Failed to delete category: ${category.name}`
+      );
     }
     res.json({
       message: `Successfully deleted category: ${category.name}`,
