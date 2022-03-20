@@ -1,28 +1,21 @@
-
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../app");
 var expect = chai.expect;
 
-let auth = require("../routes/auth");
-let User = require("../models/user");
-let Category = require("../models/category");
-let Product = require("../models/product");
-let Order = require("../models/order");
-const { beforeEach } = require("mocha");
-
+const {
+    beforeEach
+} = require("mocha");
 
 // Assertion STyle
 chai.should();
 
 chai.use(chaiHttp);
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjMzZmEwNjkwODlmZWZlYzlkZDlhMTYiLCJpYXQiOjE2NDc2Mjk2NjZ9._6xdmyzgag7sZ6ma4m2PqTtdOcBUwuLzvmKo9lXIHro'
-let userId = '6233fa069089fefec9dd9a16'
+let token,categoryId;
+let userId = "6233fa069089fefec9dd9a16";
 
-
-describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
-    describe(" Authentication API", () => {
-
+describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
+    describe("1. Authentication API", () => {
         /**
          * Test the signUP route
          */
@@ -36,7 +29,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
         //                     lastName:"Puri",
         //                     email:"vp@mun.ca",
         //                     phoneNumber:"7894561230",
-        //                     password:"Abcd@1234"                   
+        //                     password:"Abcd@1234"
         //             })
         //             .end((err, response) => {
         //                 response.should.have.status(200);
@@ -48,49 +41,53 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
         //             });
         //     });
         // });
-    
+
         /**
          * Test the signIn route
          */
-         describe("POST /api/signIn", () => {
-            
+        describe("POST /api/signIn", () => {
             it("Checking for a legitimate user and attempting to login in the website", (done) => {
-                chai 
-                    .request(server)               
+                chai
+                    .request(server)
                     .post("/api/signIn")
                     .send({
-                            email:"hs@mun.ca",
-                            password:"Abcd@1234"                   
+                        email: "hs@mun.ca",
+                        password: "Abcd@1234",
                     })
                     .end((err, response) => {
                         response.should.have.status(200);
-                        response.body.should.be.a('object');
-                        response.body.should.have.property('token');
+                        response.body.should.be.a("object");
+                        response.body.should.have.property("token");
+                        token = response.body.token;
+                        response.body.user.should.have.property("_id");
+                        response.body.user.should.have.property("firstName");
+                        response.body.user.should.have.property("email");
+                        response.body.user.should.have.property("role");
                         done();
                     });
             });
             it("Checking for a wrong user and attempting to login in the website", (done) => {
                 chai
                     .request(server)
-                    
+
                     .post("/api/signIn")
                     .send({
-                            email:"h@mun.ca",
-                            password:"Abcd@1234"                   
+                        email: "h@mun.ca",
+                        password: "Abcd@1234",
                     })
                     .end((err, response) => {
                         response.should.have.status(404);
                         done();
                     });
             });
-    
+
             it("User and password does not match", (done) => {
                 chai
                     .request(server)
                     .post("/api/signIn")
                     .send({
-                            email:"hs@mun.ca",
-                            password:"bcd@1234"                   
+                        email: "hs@mun.ca",
+                        password: "bcd@1234",
                     })
                     .end((err, response) => {
                         response.should.have.status(400);
@@ -98,35 +95,28 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
                     });
             });
         });
-    
+
         /**
          * Test the signOut route
          */
-         describe("POST /api/signOut", () => {
-            
+        describe("GET /api/signOut", () => {
             it("Testing for actual logout of the user for the website", (done) => {
                 chai
                     .request(server)
-                    .post("/api/signIn")
-                    .send({
-                            email:"hs@mun.ca",
-                            password:"Abcd@1234"                   
-                    })
+                    .get("/api/signOut")
                     .end((err, response) => {
                         response.should.have.status(200);
-                        console.log(response.body.message);
+                        console.log(response.body);
                         done();
-                        
                     });
             });
         });
     });
-    
+
     /**
-    * Test the product route
-    */
-    describe("Product API", () => {
-        
+     * Test the product route
+     */
+    describe("2. Product API", () => {
         describe("GET /api/products", () => {
             it("Get all the product from the database", (done) => {
                 chai
@@ -138,15 +128,12 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
                     });
             });
         });
-    
-        
     });
-    
+
     /**
-    * Test the all categories route
-    */
-    describe("Category API", () => {
-        
+     * Test the all categories route
+     */
+    describe("3. Category API", () => {
         describe("GET /api/categories", () => {
             it("Get all the categories from the database", (done) => {
                 chai
@@ -158,24 +145,43 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", ()=>{
                     });
             });
         });
-    
+
         describe("POST /api/category/create/:userId", () => {
-            it("Create a new product and storing it in the database", (done) => {
+            it("Create a new category and storing it in the database", (done) => {
                 chai
-                    .request('http://localhost:8000')
+                    .request(server)
                     .post(`/api/category/create/${userId}`)
-                    .auth(token, { type: 'bearer' })
+                    .auth(token, {
+                        type: "bearer"
+                    })
                     .send({
-                        name:"TEST2"                   
+                        name: "TEST2",
                     })
                     .end((err, response) => {
                         response.should.have.status(200);
-                        response.body.should.be.a('object');
+                        categoryId = response.body.category._id;
+                        response.body.should.be.a("object");
+                        response.body.category.should.have.property("name");
+                        response.body.category.should.have.property("_id");
                         done();
                     });
             });
         });
-    
-        
+
+        describe("DELETE /api/category/:userId", () => {
+            it("Delete a category for the database", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/category/${categoryId}/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("message");
+                        done();
+                    });
+            });
+        });
     });
-})
+});

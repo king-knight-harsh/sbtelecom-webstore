@@ -14,6 +14,7 @@ const {
   getUser,
   updateUser,
   userPurchaseList,
+  removeUser,
 } = require("../controllers/user");
 // Using the middleware isSignedIn, isAuthenticated, isAdmin from auth controllers
 const {
@@ -24,6 +25,7 @@ const {
 
 //Using param to run the middleware getUserById with particular keyword
 router.param("userId", getUserById);
+router.param("adminUserId",getUserById);
 
 /**
  * Get route for getting details related to a particular order
@@ -52,3 +54,12 @@ router.get(
   userPurchaseList
 );
 module.exports = router;
+
+//Delete routes to delete an existing user if the user isSignIn, isAuthenticated and isAdmin
+router.delete(
+  "/adminUser/:adminUserId/user/:userId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  removeUser
+);

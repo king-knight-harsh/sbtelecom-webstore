@@ -103,7 +103,7 @@ exports.signIn = (req, res) => {
       ); //getting the string from the .env file
       // Put token in cookie
       res.cookie("token", token, {
-        expire: new Date() + 9999, //for testing purpose only
+        expire: Math.floor(Date.now() / 1000) + (60 * 60), //Token expires in 1 hour 
       });
 
       // send custom response to front end with successful response

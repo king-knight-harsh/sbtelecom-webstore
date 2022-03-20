@@ -143,3 +143,33 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
 
   next();
 };
+
+/**
+ * Call back method to remove a user from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @returns json response with details related to User
+ */
+ exports.removeUser = (req, res, userId) => {
+  const user = userId;
+  console.log(user);
+  /**
+   * Method to remove the user from the Database
+   * @param err: Error if any error occur while saving process
+   * @param user: User object with user information
+   * @return err: Unsuccessful attempt to save user in the database
+   * @return user: Successful attempt - JSON response with details related to user
+   */
+  user.findOneAndRemove((err, user) => {
+    if (err) {
+      return customError.customErrorMessage(
+        res,
+        404,
+        `Failed to delete user: ${user.name}`
+      );
+    }
+    res.json({
+      message: `Successfully deleted user: ${user.name}`,
+    });
+  });
+};
