@@ -106,7 +106,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     .get("/api/signOut")
                     .end((err, response) => {
                         response.should.have.status(200);
-                        console.log(response.body);
+                        response.body.should.have.property("message");
                         done();
                     });
             });
@@ -168,8 +168,97 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
             });
         });
 
+        describe("GET /api/category/:categoryId", () => {
+            it("Get actual category from the database", (done) => {
+                chai
+                    .request(server)
+                    .get(`/api/category/${categoryId}`)
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("_id");
+                        response.body.should.have.property("name");
+                        response.body.should.have.property("createdAt");
+                        response.body.should.have.property("updatedAt");
+                        done();
+                    });
+            });
+        });
+
+        describe("GET /api/category/:categoryId", () => {
+            it("Get unknown category from the database", (done) => {
+                chai
+                    .request(server)
+                    .get(`/api/category/${categoryId}123`)
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
+
+        describe("PUT /api/category/:userId", () => {
+            it("Updating the category NAME", (done) => {
+                chai
+                    .request(server)
+                    .put(`/api/category/${categoryId}/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .send({
+                        name: "TEST_NAME_UPDATE",
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("_id");
+                        response.body.should.have.property("name");
+                        response.body.should.have.property("createdAt");
+                        response.body.should.have.property("updatedAt");
+                        done();
+                    });
+            });
+        });
+
+        describe("PUT /api/category/:userId", () => {
+            it("Updating the category NAME with wrong user Id", (done) => {
+                chai
+                    .request(server)
+                    .put(`/api/category/${categoryId}/${userId}123`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .send({
+                        name: "TEST_NAME_UPDATE",
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
+
+        describe("PUT /api/category/:userId", () => {
+            it("Updating the unknown category ", (done) => {
+                chai
+                    .request(server)
+                    .put(`/api/category/${categoryId}123/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .send({
+                        name: "TEST_NAME_UPDATE",
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
+
         describe("DELETE /api/category/:userId", () => {
-            it("Delete a category for the database", (done) => {
+            it("Delete a category from the database", (done) => {
                 chai
                     .request(server)
                     .delete(`/api/category/${categoryId}/${userId}`)
