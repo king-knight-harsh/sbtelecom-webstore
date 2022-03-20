@@ -5,7 +5,7 @@
 const customError = require("../utils/common");
 //Importing the User and Order models from models folder
 const User = require("../models/user");
-const Order = require("../models/order");
+const {Order} = require("../models/order");
 
 /**
  * Middleware for getting the user by particular order id
@@ -89,13 +89,17 @@ exports.userPurchaseList = (req, res) => {
     .populate("user", "_id firstName email")
     .exec((err, order) => {
       // returning bad request error with json response
-      return customError.customErrorMessage(
-        res,
-        400,
-        "No order in this account"
-      );
+      if(err){
+        return customError.customErrorMessage(
+          res,
+          400,
+          "No order in this account"
+        );
+      }
+      return res.json(order)
     });
-  return res.json(order);
+    
+  ;
 };
 
 /**

@@ -166,7 +166,7 @@ exports.updateProduct = (req, res) => {
       return customError.customErrorMessage(res, 400, "Problem with image");
     }
     // update code
-    let product = req.product;
+    product = req.product;
     product = _.extend(product, fields);
 
     //Handle the file here
