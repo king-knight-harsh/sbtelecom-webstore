@@ -11,7 +11,8 @@ const {
 chai.should();
 
 chai.use(chaiHttp);
-let token,categoryId;
+let token,categoryId,productId;
+categoryIdForProductAPI = "6234b178445b6fd96a1e2920";
 let userId = "6233fa069089fefec9dd9a16";
 
 describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
@@ -128,12 +129,90 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     });
             });
         });
+        describe("POST /api/product/create/:userId", () => {
+            it("Create a new product and storing it in the database", (done) => {
+                chai
+                    .request(server)
+                    .post(`/api/product/create/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .type('form')
+                    .send({
+                        'name': 'LG Monitor 34 inch',
+                        'description': '4k Curved Monitor',
+                        'price': 699,
+                        'category': `${categoryIdForProductAPI}`,
+                        'stock':5
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("name");
+                        response.body.should.have.property("description");
+                        response.body.should.have.property("price");
+                        response.body.should.have.property("category");
+                        response.body.should.have.property("stock");
+                        response.body.should.have.property("sold");
+                        response.body.should.have.property("_id");
+                        productId=response.body._id;
+                        done();
+                    });
+            });
+        });
+
+        describe("DELETE /api/product/create/:userId", () => {
+            it("Delete a product from the database", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/product/${productId}/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("message");
+                        done();
+                    });
+            });
+        });
+
+        describe("DELETE /api/product/create/:userId", () => {
+            it("Delete a product from the database with wrong user id", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/product/${productId}/${userId}123`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
+
+        describe("DELETE /api/product/create/:userId", () => {
+            it("Deleting an unknown product from the database", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/product/${productId}123/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
     });
 
     /**
      * Test the all categories route
      */
-    describe("3. Category API", () => {
+     describe("3. Category API", () => {
         describe("GET /api/categories", () => {
             it("Get all the categories from the database", (done) => {
                 chai
@@ -268,6 +347,38 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     .end((err, response) => {
                         response.should.have.status(200);
                         response.body.should.have.property("message");
+                        done();
+                    });
+            });
+        });
+
+        describe("DELETE /api/category/create/:userId", () => {
+            it("Delete a category from the database with wrong user id", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/category/${productId}/${userId}123`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
+                        done();
+                    });
+            });
+        });
+
+        describe("DELETE /api/category/create/:userId", () => {
+            it("Deleting an unknown category from the database", (done) => {
+                chai
+                    .request(server)
+                    .delete(`/api/category/${productId}123/${userId}`)
+                    .auth(token, {
+                        type: "bearer"
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(404);
+                        response.body.should.have.property("ERROR");
                         done();
                     });
             });

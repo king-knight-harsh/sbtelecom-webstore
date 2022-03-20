@@ -22,7 +22,7 @@ exports.getUserById = (req, res, next, id) => {
       return customError.customErrorMessage(
         res,
         404,
-        `User not found in the DATABASE"`
+        `User not found in the DATABASE`
       );
     }
     req.profile = user;

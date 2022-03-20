@@ -25,11 +25,9 @@ exports.getProductById = (req, res, next, id) => {
     .exec((err, product) => {
       if (err) {
         // returning bad request error with json response
-        return res.status(400).json({
-          Error: "Product doesn't exists",
-        });
+        return customError.customErrorMessage(res, 404, "Product not found");
       }
-      req.products = product;
+      req.product = product;
       next(); //jumping to the next method or middleware
     });
 };
@@ -47,9 +45,7 @@ exports.createProduct = (req, res) => {
   form.parse(req, (err, fields, file) => {
     if (err) {
       // returning bad request error with json response
-      return res.status(400).json({
-        Error: "Problem with image",
-      });
+      return customError.customErrorMessage(res, 400, "Problem with image");
     }
     //Destructure the fields
     const {
@@ -61,9 +57,11 @@ exports.createProduct = (req, res) => {
     } = fields;
     //Conditional check for checking for the actual product
     if (!name || !description || !price || !category || !stock) {
-      return res.status(400).json({
-        Error: "Please include all fields",
-      });
+      return customError.customErrorMessage(
+        res,
+        400,
+        "Please include all fields"
+      );
     }
     //Creating and store the Product object in the product variable
     let product = new Product(fields);
@@ -72,9 +70,7 @@ exports.createProduct = (req, res) => {
     if (file.photo) {
       if (file.photo.size > 3145728) {
         // returning bad request error with json response
-        return res.status(400).json({
-          Error: "File size too big",
-        });
+        return customError.customErrorMessage(res, 400, "File size too big");
       }
       //reading the photo file using fs
       product.photo.data = fs.readFileSync(file.photo.path);
@@ -90,9 +86,11 @@ exports.createProduct = (req, res) => {
     product.save((err, product) => {
       if (err) {
         // returning bad request error with json response
-        return res.status(400).json({
-          Error: "Saving product in DB failed",
-        });
+        return customError.customErrorMessage(
+          res,
+          400,
+          "Saving product in DB failed"
+        );
       }
       res.json(product); //json response with details related to the product
     });
@@ -134,17 +132,19 @@ exports.photo = (req, res, next) => {
  */
 exports.removeProduct = (req, res) => {
   //getting the product from the request
-  let product = req.product;
+  const product = req.product;
   product.remove((err, deletedProduct) => {
     if (err) {
       // returning bad request error with json response
-      return res.status(400).json({
-        error: `failed to delete the product ${deletedProduct.name}`,
-      });
+      return customError.customErrorMessage(
+        res,
+        400,
+        `failed to delete the product`
+      );
     }
     //json response with details related to the product
     res.json({
-      message: `Deletion was successful`,
+      message: `Deletion was successful ${deletedProduct.name}`,
       deletedProduct,
     });
   });
