@@ -23,7 +23,7 @@ chai.use(chaiHttp);
  * categoryIdForProductAPI - categoryId used for categorizing the product
  * created while testing
  */
-let token, categoryId, productId, userId, categoryIdForProductAPI;
+let token, categoryId, productId, userId, categoryIdForProductAPI, productName,categoryObject;
 
 /**
  * Main testing starts here
@@ -250,11 +250,10 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
     /**
      * Test the all categories route
      */
-    describe("4. Category API", () => {
-        
+    describe("3. Category API", () => {
         /**
-        * Testing the post route creating a category 
-        */
+         * Testing the post route creating a category
+         */
         describe("POST /api/category/create/:userId", () => {
             it("Create a new category and storing it in the database", (done) => {
                 chai
@@ -268,6 +267,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     })
                     .end((err, response) => {
                         response.should.have.status(200);
+                        categoryObject =response.body.category;
                         categoryId = response.body.category._id;
                         response.body.should.be.a("object");
                         response.body.category.should.have.property("name");
@@ -278,9 +278,9 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
             });
         });
         /**
-        * Testing the all the get routes for the category.js 
-        */
-         describe("GET /api/categories", () => {
+         * Testing the all the get routes for the category.js
+         */
+        describe("GET /api/categories", () => {
             it("Get all the categories from the database", (done) => {
                 chai
                     .request(server)
@@ -317,8 +317,8 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
             });
         });
         /**
-        * Testing the put route updating fields of a category 
-        */
+         * Testing the put route updating fields of a category
+         */
         describe("PUT /api/category/:userId", () => {
             it("Updating the category NAME", (done) => {
                 chai
@@ -376,12 +376,12 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
         });
     });
     /**
-     * Test the all the routes for the product 
+     * Test the all the routes for the product
      */
-    describe("3. Product API", () => {
+    describe("4. Product API", () => {
         /**
-        * Testing the post route creating a new product 
-        */
+         * Testing the post route creating a new product
+         */
         describe("POST /api/product/create/:userId", () => {
             it("Create a new product and storing it in the database", (done) => {
                 chai
@@ -401,6 +401,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     .end((err, response) => {
                         response.should.have.status(200);
                         response.body.should.have.property("name");
+                        productName = response.body.name;
                         response.body.should.have.property("description");
                         response.body.should.have.property("price");
                         response.body.should.have.property("category");
@@ -413,9 +414,9 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
             });
         });
         /**
-        * Testing the all the get routes for the product.js 
-        */
-         describe("GET /api/products", () => {
+         * Testing the all the get routes for the product.js
+         */
+        describe("GET /api/products", () => {
             it("Get all the product from the database", (done) => {
                 chai
                     .request(server)
@@ -448,11 +449,10 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                         done();
                     });
             });
-
         });
         /**
-        * Testing the put route updating a field of a product 
-        */
+         * Testing the put route updating a field of a product
+         */
         describe("PUT /api/product/:userId", () => {
             it("Updating the product name", (done) => {
                 chai
@@ -511,9 +511,91 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     });
             });
         });
+    });
+    /**
+     * Test the all routes for the order
+     */
+    describe("5. ORDER API", () => {
         /**
-        * Testing the delete route deleting a product 
-        */
+         * Testing the all the get routes for the order.js
+         */
+        describe("GET /api/order/all/:userId", () => {
+            it("Get all the product from the database", (done) => {
+                chai
+                    .request(server)
+                    .get(`/api/order/all/${userId}`)
+                    .auth(token, {
+                        type: "bearer",
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        done();
+                    });
+            });
+        });
+
+        /**
+         * Testing the post route creating a new product
+         */
+         describe("POST /api/order/create/:userId", () => {
+            it("Create a new product and storing it in the database", (done) => {
+                chai
+                    .request(server)
+                    .post(`/api/order/create/${userId}`)
+                    .auth(token, {
+                        type: "bearer",
+                    })
+                    .send([
+                        {
+                            "_id": `${productId}`,
+                            "name": `${productName}`,
+                            "description": "1 ms with ultra hd display",
+                            "category": {
+                                "_id": `${categoryObject._id}`,
+                                "name":`${categoryObject.name}`
+                            },
+                            "quantity":2,
+                            "amount":199,
+                            "transaction_id": 201
+                    
+                        }
+                    ])
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        response.body.should.have.property("status");
+                        response.body.should.have.property("user");
+                        response.body.should.have.property("_id");
+                        done();
+                    });
+            });
+        });
+
+        /**
+         * Testing the get routes for the getting the status of the order
+         */
+         describe("GET /api/order/status/:userId", () => {
+            it("Get the status of the order of a particular user", (done) => {
+                chai
+                    .request(server)
+                    .get(`/api/order/status/${userId}`)
+                    .auth(token, {
+                        type: "bearer",
+                    })
+                    .end((err, response) => {
+                        response.should.have.status(200);
+                        done();
+                    });
+            });
+         });
+    });
+
+    /**
+     * Test the delete routes for the product
+     */
+    describe("6. Product API", () => {
+        /**
+         * Testing the delete route deleting a product
+         */
         describe("DELETE /api/product/create/:userId", () => {
             it("Delete a product from the database", (done) => {
                 chai
@@ -528,6 +610,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                         done();
                     });
             });
+        
 
             it("Delete a product from the database with wrong user id", (done) => {
                 chai
@@ -558,10 +641,11 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
             });
         });
     });
+
     /**
      * Testing the delete route for the category
      */
-    describe("6. Category API", () => {
+    describe("7. Category API", () => {
         /**
          * Testing the delete routes for the category
          */

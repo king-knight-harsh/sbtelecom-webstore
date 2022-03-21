@@ -39,8 +39,9 @@ exports.getOrderById = (req, res, next) => {
  * @return order: Successful attempt - JSON response with details related to the order
  */
 exports.createOrder = (req, res) => {
-  req.body.order.user = req.profile;
-  const order = new Order(req.body.order);
+  req.body.user = req.profile;
+  const order = new Order(req.body);
+  order.status ="Processing";
   /**
    * Method to save the order in the Database
    * @param err: Error if any error occur while saving process
@@ -58,6 +59,7 @@ exports.createOrder = (req, res) => {
         "Failed to save your order in DB"
       );
     }
+    res.json(order);
   });
 };
 /**

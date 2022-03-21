@@ -234,16 +234,17 @@ exports.getAllProducts = (req, res) => {
  * @return product: Successful attempt - JSON response with details related to the product
  */
 exports.updateStock = (req, res, next) => {
-  let myOperations = req.body.order.products.map((prod) => {
+  
+  let myOperations = req.body.map((prod) => {
     return {
       updateOne: {
         filter: {
           _id: prod._id,
         },
         update: {
-          $inc: {
-            stock: -prod.count,
-            sold: +prod.count,
+          $set: {
+            stock: -prod.quantity,
+            sold: +prod.quantity,
           },
         },
       },
