@@ -23,7 +23,13 @@ chai.use(chaiHttp);
  * categoryIdForProductAPI - categoryId used for categorizing the product
  * created while testing
  */
-let token, categoryId, productId, userId, categoryIdForProductAPI, productName,categoryObject;
+let token,
+    categoryId,
+    productId,
+    userId,
+    categoryIdForProductAPI,
+    productName,
+    categoryObject;
 
 /**
  * Main testing starts here
@@ -267,7 +273,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     })
                     .end((err, response) => {
                         response.should.have.status(200);
-                        categoryObject =response.body.category;
+                        categoryObject = response.body.category;
                         categoryId = response.body.category._id;
                         response.body.should.be.a("object");
                         response.body.category.should.have.property("name");
@@ -537,7 +543,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
         /**
          * Testing the post route creating a new product
          */
-         describe("POST /api/order/create/:userId", () => {
+        describe("POST /api/order/create/:userId", () => {
             it("Create a new product and storing it in the database", (done) => {
                 chai
                     .request(server)
@@ -545,21 +551,18 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                     .auth(token, {
                         type: "bearer",
                     })
-                    .send([
-                        {
-                            "_id": `${productId}`,
-                            "name": `${productName}`,
-                            "description": "1 ms with ultra hd display",
-                            "category": {
-                                "_id": `${categoryObject._id}`,
-                                "name":`${categoryObject.name}`
-                            },
-                            "quantity":2,
-                            "amount":199,
-                            "transaction_id": 201
-                    
-                        }
-                    ])
+                    .send([{
+                        _id: `${productId}`,
+                        name: `${productName}`,
+                        description: "1 ms with ultra hd display",
+                        category: {
+                            _id: `${categoryObject._id}`,
+                            name: `${categoryObject.name}`,
+                        },
+                        quantity: 2,
+                        amount: 199,
+                        transaction_id: 201,
+                    }, ])
                     .end((err, response) => {
                         response.should.have.status(200);
                         response.body.should.have.property("status");
@@ -573,7 +576,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
         /**
          * Testing the get routes for the getting the status of the order
          */
-         describe("GET /api/order/status/:userId", () => {
+        describe("GET /api/order/status/:userId", () => {
             it("Get the status of the order of a particular user", (done) => {
                 chai
                     .request(server)
@@ -586,7 +589,7 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                         done();
                     });
             });
-         });
+        });
     });
 
     /**
@@ -610,7 +613,6 @@ describe("UNIT TESTING WITH MOCHA AND CHAI", () => {
                         done();
                     });
             });
-        
 
             it("Delete a product from the database with wrong user id", (done) => {
                 chai
