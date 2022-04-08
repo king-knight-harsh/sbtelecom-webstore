@@ -1,37 +1,6 @@
-/**
- * Script with logic to the product routes
- */
-
-//Importing the Product models from models folder
-const Product = require("../models/product");
-//Importing the formidable to deal with images
-const formidable = require("formidable");
-const _ = require("lodash");
-//importing fs to deal with file-system
-const fs = require("fs");
+const Product = require("../models/Product");
 //Importing common code snippet from common.js
 const customError = require("../utils/common");
-/**
- * Middleware for getting the product by particular product id
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @param {*} next - jumping to the next middleware or method
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.getProductById = (req, res, next, id) => {
-  Product.findById(id)
-    .populate("category")
-    .exec((err, product) => {
-      if (err) {
-        // returning bad request error with json response
-        return customError.customErrorMessage(res, 404, "Product not found");
-      }
-      req.product = product;
-      next(); //jumping to the next method or middleware
-    });
-};
-
 /**
  * Callback method for creating a new product in the database
  * @param {*} req - request from client side
@@ -39,242 +8,95 @@ exports.getProductById = (req, res, next, id) => {
  * @return err: Unsuccessful attempt to save user in the database
  * @return product: Successful attempt - JSON response with details related to the product
  */
-exports.createProduct = (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, file) => {
-    if (err) {
-      // returning bad request error with json response
-      return customError.customErrorMessage(res, 400, "Problem with image");
-    }
-    //Destructure the fields
-    const {
-      name,
-      description,
-      price,
-      category,
-      stock
-    } = fields;
-    //Conditional check for checking for the actual product
-    if (!name || !description || !price || !category || !stock) {
-      return customError.customErrorMessage(
-        res,
-        400,
-        "Please include all fields"
-      );
-    }
-    //Creating and store the Product object in the product variable
-    let product = new Product(fields);
+exports.createProduct = async (req, res) => {
+	const newProduct = new Product(req.body);
 
-    //Handling the photo file here
-    if (file.photo) {
-      if (file.photo.size > 3145728) {
-        // returning bad request error with json response
-        return customError.customErrorMessage(res, 400, "File size too big");
-      }
-      //reading the photo file using fs
-      product.photo.data = fs.readFileSync(file.photo.path);
-      product.photo.contentType = file.photo.type;
-    }
-    /**
-     * Method to save the product in the Database
-     * @param err: Error if any error occur while saving process
-     * @param order: Order object with user information
-     * @return err: Unsuccessful attempt to save user in the database
-     * @return order: Successful attempt - JSON response with details related to the order
-     */
-    product.save((err, product) => {
-      if (err) {
-        // returning bad request error with json response
-        return customError.customErrorMessage(
-          res,
-          400,
-          "Saving product in DB failed"
-        );
-      }
-      res.json(product); //json response with details related to the product
-    });
-  });
+	try {
+		const savedProduct = await newProduct.save();
+		res.status(200).json(savedProduct);
+	} catch (err) {
+		// returning bad request error with json response
+		return customError.customErrorMessage(
+			res,
+			400,
+			`UNABLE TO CREATE NEW PRODUCT`
+		);
+	}
 };
 
-/**
- * Callback method for getting a product from the database
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.getProduct = (req, res) => {
-  req.product.photo = undefined;
-  return res.json(req.product);
+exports.updateProduct = async (req, res) => {
+	try {
+		const updatedProduct = await Product.findByIdAndUpdate(
+			req.params.id,
+			{
+				$set: req.body,
+			},
+			{ new: true }
+		);
+		res.status(200).json(updatedProduct);
+	} catch (err) {
+		// returning bad request error with json response
+		return customError.customErrorMessage(
+			res,
+			400,
+			`UNABLE TO UPDATE THE PRODUCT`
+		);
+	}
 };
 
-/**
- * Middleware for getting the photo of the product
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @param {*} next - jumping to the next middleware or method
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.photo = (req, res, next) => {
-  if (req.product.photo) {
-    res.set("Content-Type", req.product.photo.contentType);
-    return res.send(req.product.photo.data);
-  }
-  next(); //jumping to the next method or middleware
+exports.deleteProduct = async (req, res) => {
+	try {
+		await Product.findByIdAndDelete(req.params.id);
+		res.status(200).json("Product has been deleted...");
+	} catch (err) {
+		// returning bad request error with json response
+		return customError.customErrorMessage(
+			res,
+			400,
+			`UNABLE TO DELETE THE PRODUCT`
+		);
+	}
 };
 
-/**
- * Callback method for deleting a product from the database
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.removeProduct = (req, res) => {
-  //getting the product from the request
-  const product = req.product;
-  product.remove((err, deletedProduct) => {
-    if (err) {
-      // returning bad request error with json response
-      return customError.customErrorMessage(
-        res,
-        400,
-        `failed to delete the product`
-      );
-    }
-    //json response with details related to the product
-    res.json({
-      message: `Deletion was successful ${deletedProduct.name}`,
-      deletedProduct,
-    });
-  });
+exports.getProduct = async (req, res) => {
+	try {
+		const product = await Product.findById(req.params.id);
+		res.status(200).json(product);
+	} catch (err) {
+		// returning bad request error with json response
+		return customError.customErrorMessage(
+			res,
+			400,
+			`UNABLE TO GET THE PRODUCT`
+		);
+	}
 };
 
-/**
- * Callback method for updating a product in the database
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.updateProduct = (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, file) => {
-    if (err) {
-      // returning bad request error with json response
-      return customError.customErrorMessage(res, 400, "Problem with image");
-    }
-    // update code
-    product = req.product;
-    product = _.extend(product, fields);
+exports.getAllProducts = async (req, res) => {
+	const qNew = req.query.new;
+	const qCategory = req.query.category;
+	try {
+		let products;
 
-    //Handle the file here
-    if (file.photo) {
-      //error if the size is greater than 3 mb
-      if (file.photo.size > 3145728) {
-        // returning bad request error with json response
-        return customError.customErrorMessage(res, 400, "File size too big");
-      }
-      product.photo.data = fs.readFileSync(file.photo.path);
-      product.photo.contentType = file.photo.type;
-    }
-    //Save to the DB
-    product.save((err, product) => {
-      if (err) {
-        // returning bad request error with json response
-        return customError.customErrorMessage(
-          res,
-          400,
-          "Updation of the product failed"
-        );
-      }
-      //json response with details related to the product
-      res.json(product);
-    });
-  });
-};
+		if (qNew) {
+			products = await Product.find().sort({ createdAt: -1 }).limit(1);
+		} else if (qCategory) {
+			products = await Product.find({
+				categories: {
+					$in: [qCategory],
+				},
+			});
+		} else {
+			products = await Product.find();
+		}
 
-/**
- * Callback method for getting all the products from the database
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.getAllProducts = (req, res) => {
-  // limiting the number of products to be shown default to 8
-  let limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  // sorting the products default with regards to _id
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
-  //finding all the products in the data base
-  Product.find()
-    .select("-photo")
-    .populate("category")
-    .sort([
-      [sortBy, "asc"]
-    ])
-    .limit(limit)
-    .exec((err, products) => {
-      // returning bad request error with json response
-      if (err) {
-        return customError.customErrorMessage(res, 400, "No product found");
-      }
-      //json response with details related to the products
-      res.json(products);
-    });
-};
-
-/**
- * Middleware for updating the stock of the product
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @param {*} next - jumping to the next middleware or method
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.updateStock = (req, res, next) => {
-  
-  let myOperations = req.body.map((prod) => {
-    return {
-      updateOne: {
-        filter: {
-          _id: prod._id,
-        },
-        update: {
-          $set: {
-            stock: -prod.quantity,
-            sold: +prod.quantity,
-          },
-        },
-      },
-    };
-  });
-  //bulk writing of the products
-  Product.bulkWrite(myOperations, {}, (err, products) => {
-    if (err) {
-      // returning bad request error with json response
-      return customError.customErrorMessage(res, 400, "Bulk operation failed");
-    }
-    next(); //jumping to the next method or the middleware
-  });
-};
-
-/**
- * Callback method for getting all the unique categories
- * @param {*} req - request from client side
- * @param {*} res - response from the server side
- * @return err: Unsuccessful attempt to save user in the database
- * @return product: Successful attempt - JSON response with details related to the product
- */
-exports.getAllUniqueCategories = (req, res) => {
-  //getting unique categories or returning the error
-  Product.distinct("category", {}, (err, category) => {
-    if (err) {
-      // returning bad request error with json response
-      return customError.customErrorMessage(res, 400, "NO category found");
-    }
-    //json response with details related to the category
-    res.json(category);
-  });
+		res.status(200).json(products);
+	} catch (err) {
+		// returning bad request error with json response
+		return customError.customErrorMessage(
+			res,
+			400,
+			`UNABLE TO GET ANY PRODUCT`
+		);
+	}
 };
