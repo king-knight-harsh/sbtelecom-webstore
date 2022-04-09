@@ -4,7 +4,7 @@ import {
 	Remove,
 } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
@@ -15,6 +15,7 @@ import StripeCheckout from "react-stripe-checkout";
 import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import { removeFromCart } from "../redux/cartRedux";
 
 
 
@@ -169,6 +170,7 @@ const Cart = () => {
 	const [stripeToken, setStripeToken] = useState(null);
 	const [quantity, setQuantity] = useState(1);
 	const history = useHistory();
+	const dispatch = useDispatch()
 
 	const onToken = (token) => {
 		setStripeToken(token);
@@ -200,6 +202,10 @@ const Cart = () => {
 			console.log("increase");
 		}
 	};
+	
+	const handleRemoveFromCart = (cartItem) => {
+		dispatch(removeFromCart(cartItem))
+	}
 	return (
 		<Container>
 			<Navbar />
@@ -246,6 +252,7 @@ const Cart = () => {
 										<ProductSize>
 											<b>Size:</b> {product.size}
 										</ProductSize>
+										<Delete onClick={() => handleRemoveFromCart(product)} />
 									</Details>
 								</ProductDetail>
 								<PriceDetail>
@@ -258,7 +265,6 @@ const Cart = () => {
 										$ {product.price * product.quantity}
 									</ProductPrice>
 								</PriceDetail>
-								<Delete />
 							</Product>
 						))}
 						<Hr />

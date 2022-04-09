@@ -5,6 +5,9 @@ import {
 	registerStart,
 	registerSuccess,
 	registerFailure,
+	logoutStart,
+	logoutSuccess,
+	logoutFailure
 } from "./userRedux";
 import { publicRequest } from "../requestMethods";
 
@@ -25,5 +28,15 @@ export const register = async (dispatch, user) => {
 		dispatch(registerSuccess(res.data));
 	} catch (err) {
 		dispatch(registerFailure());
+	}
+};
+
+export const logout = async (dispatch) => {
+	dispatch(logoutStart());
+	try {
+		const res = await publicRequest.get("/auth/logout");
+		dispatch(logoutSuccess(res.data));
+	} catch (err) {
+		dispatch(logoutFailure());
 	}
 };
