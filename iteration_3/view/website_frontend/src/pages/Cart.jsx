@@ -1,4 +1,8 @@
-import { Add, Remove } from "@material-ui/icons";
+import {
+	Add,
+	Delete,
+	Remove,
+} from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
@@ -12,7 +16,7 @@ import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 
-const KEY = process.env.REACT_APP_STRIPE;
+
 
 const Container = styled.div``;
 
@@ -159,35 +163,41 @@ const Button = styled.button`
 	font-weight: 600;
 `;
 
+
 const Cart = () => {
 	const cart = useSelector((state) => state.cart);
-    const [stripeToken, setStripeToken] = useState(null);
+	const [stripeToken, setStripeToken] = useState(null);
 	const [quantity, setQuantity] = useState(1);
-    const history = useHistory();
-  
-    const onToken = (token) => {
-        setStripeToken(token);
-      };
-      useEffect((cart) => {
-        const makeRequest = async () => {
-          try {
-            const res = await userRequest.post("/checkout/payment", {
-              tokenId: stripeToken.id,
-              amount: cart.total*100,
-            });
-            history.push("/success", {
-              stripeData: res.data,
-              products: cart, });
-          } catch {}
-        };
-        stripeToken && makeRequest();
-      }, [stripeToken, cart.total, history]);
+	const history = useHistory();
 
-	  const handleQuantity = (type) => {
+	const onToken = (token) => {
+		setStripeToken(token);
+	};
+	useEffect(
+		(cart) => {
+			const makeRequest = async () => {
+				try {
+					const res = await userRequest.post("/checkout/payment", {
+						tokenId: stripeToken.id,
+						amount: cart.total * 100,
+					});
+					history.push("/success", {
+						stripeData: res.data,
+						products: cart,
+					});
+				} catch {}
+			};
+			stripeToken && makeRequest();
+		},
+		[stripeToken, cart.total, history]
+	);
+
+	const handleQuantity = (type) => {
 		if (type === "dec") {
 			quantity > 1 && setQuantity(quantity - 1);
 		} else {
 			setQuantity(quantity + 1);
+			console.log("increase");
 		}
 	};
 	return (
@@ -197,28 +207,27 @@ const Cart = () => {
 			<Wrapper>
 				<Title>YOUR BAG</Title>
 				<Top>
-					<Link to={"/"} style={{textDecoration:"none"}} >
-					<TopButton>CONTINUE CHECKING</TopButton>
+					<Link to={"/"} style={{ textDecoration: "none" }}>
+						<TopButton>CONTINUE CHECKING</TopButton>
 					</Link>
-					
+
 					<TopTexts>
 						<TopText>Shopping Bag</TopText>
 						<TopText>Your Wishlist</TopText>
 					</TopTexts>
-					
+
 					<StripeCheckout
-							name="S.B. TELECOM"
-							image="https://cdn.iconscout.com/icon/premium/png-256-thumb/payment-method-seo-business-startup-marketing-optimization-44161.png"
-							billingAddress
-							shippingAddress
-							description={`Your total is $${cart.total}`}
-							amount={cart.total * 100}
-							token={onToken}
-							stripeKey={KEY}
-						>
-					<TopButton type="filled">CHECKOUT NOW </TopButton>
+						name="S.B. TELECOM"
+						image="https://cdn.iconscout.com/icon/premium/png-256-thumb/payment-method-seo-business-startup-marketing-optimization-44161.png"
+						billingAddress
+						shippingAddress
+						description={`Your total is $${cart.total}`}
+						amount={cart.total * 100}
+						token={onToken}
+						stripeKey="pk_test_51Km9diJjuzgLFcYDKaBa6mkyam2WmPgbNxh0b7AJ4TateGyw2vOlpgDDpSSRar2DEZlhcxLyiLu3HOS7YmpSCptt00X5KMTpB2"
+					>
+						<TopButton type="filled">CHECKOUT NOW </TopButton>
 					</StripeCheckout>
-					
 				</Top>
 				<Bottom>
 					<Info>
@@ -241,7 +250,7 @@ const Cart = () => {
 								</ProductDetail>
 								<PriceDetail>
 									<ProductAmountContainer>
-										<Add onClick={() => handleQuantity("inc")}/>
+										<Add onClick={() => handleQuantity("inc")} />
 										<ProductAmount>{product.quantity}</ProductAmount>
 										<Remove onClick={() => handleQuantity("dec")} />
 									</ProductAmountContainer>
@@ -249,6 +258,7 @@ const Cart = () => {
 										$ {product.price * product.quantity}
 									</ProductPrice>
 								</PriceDetail>
+								<Delete />
 							</Product>
 						))}
 						<Hr />
@@ -279,7 +289,7 @@ const Cart = () => {
 							description={`Your total is $${cart.total}`}
 							amount={cart.total * 100}
 							token={onToken}
-							stripeKey={KEY}
+							stripeKey="pk_test_51Km9diJjuzgLFcYDKaBa6mkyam2WmPgbNxh0b7AJ4TateGyw2vOlpgDDpSSRar2DEZlhcxLyiLu3HOS7YmpSCptt00X5KMTpB2"
 						>
 							<Button>CHECKOUT NOW</Button>
 						</StripeCheckout>
