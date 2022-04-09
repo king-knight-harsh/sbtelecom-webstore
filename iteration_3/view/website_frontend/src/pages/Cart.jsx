@@ -179,10 +179,12 @@ const Cart = () => {
 		(cart) => {
 			const makeRequest = async () => {
 				try {
-					const res = await userRequest.post("/checkout/payment", {
+					const res = await userRequest.post("/checkout/payment", {						
 						tokenId: stripeToken.id,
 						amount: cart.total * 100,
+						
 					});
+					console.log(cart.total);
 					history.push("/success", {
 						stripeData: res.data,
 						products: cart,
