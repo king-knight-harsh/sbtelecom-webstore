@@ -1,7 +1,5 @@
 import {
-	Add,
 	Delete,
-	Remove,
 } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -168,7 +166,6 @@ const Button = styled.button`
 const Cart = () => {
 	const cart = useSelector((state) => state.cart);
 	const [stripeToken, setStripeToken] = useState(null);
-	const [quantity, setQuantity] = useState(1);
 	const history = useHistory();
 	const dispatch = useDispatch()
 
@@ -196,14 +193,6 @@ const Cart = () => {
 		[stripeToken, cart.total, history]
 	);
 
-	const handleQuantity = (type) => {
-		if (type === "dec") {
-			quantity > 1 && setQuantity(quantity - 1);
-		} else {
-			setQuantity(quantity + 1);
-			console.log("increase");
-		}
-	};
 	
 	const handleRemoveFromCart = (cartItem) => {
 		dispatch(removeFromCart(cartItem))
@@ -259,9 +248,7 @@ const Cart = () => {
 								</ProductDetail>
 								<PriceDetail>
 									<ProductAmountContainer>
-										<Add onClick={() => handleQuantity("inc")} />
 										<ProductAmount>{product.quantity}</ProductAmount>
-										<Remove onClick={() => handleQuantity("dec")} />
 									</ProductAmountContainer>
 									<ProductPrice>
 										$ {product.price * product.quantity}
