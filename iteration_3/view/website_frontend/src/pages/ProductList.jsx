@@ -1,3 +1,4 @@
+// Importing the required libraries
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Announcement from "../components/Announcement";
@@ -8,35 +9,36 @@ import { mobile } from "../responsive";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 
+// styled component to style the Container
 const Container = styled.div``;
-
+// styled component to style the Title
 const Title = styled.h1``;
-
+// styled component to style the FilterContainer
 const FilterContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
 `;
-
+// styled component to style the Filter
 const Filter = styled.div`
 	margin: 20px;
 	${mobile({ width: "0px 25px%", display: "flex", flexDirection: "column" })}
 `;
-
+// styled component to style the FilterText
 const FilterText = styled.span`
 	font-style: 20px;
 	font-weight: 600;
 	margin-right: 20px;
 	${mobile({ marginRight: "0px" })}
 `;
-
+// styled component to style the Select
 const Select = styled.select`
 	padding: 10px;
 	margin-right: 20px;
 	${mobile({ marginLeft: "10px 0px" })}
 `;
-
+// styled component to style the Option
 const Option = styled.option``;
-
+// React ProductList page
 const ProductList = () => {
 	const location = useLocation();
 	const cat = location.pathname.split("/")[2];
@@ -92,5 +94,5 @@ const ProductList = () => {
 		</Container>
 	);
 };
-
+//Exporting
 export default ProductList;

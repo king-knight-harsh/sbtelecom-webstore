@@ -1,3 +1,4 @@
+// Importing the required libraries
 import {
 	loginFailure,
 	loginStart,
@@ -7,10 +8,11 @@ import {
 	registerFailure,
 	logoutStart,
 	logoutSuccess,
-	logoutFailure
+	logoutFailure,
 } from "./userRedux";
 import { publicRequest } from "../requestMethods";
 
+// login request
 export const login = async (dispatch, user) => {
 	dispatch(loginStart());
 	try {
@@ -20,7 +22,7 @@ export const login = async (dispatch, user) => {
 		dispatch(loginFailure());
 	}
 };
-
+// register request
 export const register = async (dispatch, user) => {
 	dispatch(registerStart());
 	try {
@@ -30,7 +32,7 @@ export const register = async (dispatch, user) => {
 		dispatch(registerFailure());
 	}
 };
-
+// logout request
 export const logout = async (dispatch) => {
 	dispatch(logoutStart());
 	try {

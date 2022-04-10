@@ -1,6 +1,5 @@
-import {
-	Delete,
-} from "@material-ui/icons";
+// Importing the required libraries
+import { Delete } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -15,27 +14,26 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { removeFromCart } from "../redux/cartRedux";
 
-
-
+// styled component to style the Container
 const Container = styled.div``;
-
+// styled component to style the Container
 const Wrapper = styled.div`
 	padding: 20px;
 	${mobile({ padding: "10px" })}
 `;
-
+// styled component to style the Container
 const Title = styled.h1`
 	font-weight: 300;
 	text-align: center;
 `;
-
+// styled component to style the Container
 const Top = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 20px;
 `;
-
+// styled component to style the Container
 const TopButton = styled.button`
 	padding: 10px;
 	font-weight: 600;
@@ -45,61 +43,63 @@ const TopButton = styled.button`
 		props.type === "filled" ? "black" : "transparent"};
 	color: ${(props) => props.type === "filled" && "white"};
 `;
-
+// styled component to style the Container
 const TopTexts = styled.div`
 	${mobile({ display: "none" })}
 `;
+// styled component to style the Container
 const TopText = styled.span`
 	text-decoration: underline;
 	cursor: pointer;
 	margin: 0px 10px;
 `;
-
+// styled component to style the Container
 const Bottom = styled.div`
 	display: flex;
 	justify-content: space-between;
 	${mobile({ flexDirection: "column" })}
 `;
-
+// styled component to style the Container
 const Info = styled.div`
 	flex: 3;
 `;
-
+// styled component to style the Container
 const Product = styled.div`
 	display: flex;
 	justify-content: space-between;
 	${mobile({ flexDirection: "column" })}
 `;
+// styled component to style the Container
 const ProductDetail = styled.div`
 	flex: 2;
 	display: flex;
 `;
-
+// styled component to style the Container
 const Image = styled.img`
 	width: 200px;
 	height: 150px;
 `;
-
+// styled component to style the Container
 const Details = styled.div`
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
 `;
-
+// styled component to style the Container
 const ProductName = styled.span``;
-
+// styled component to style the Container
 const ProductId = styled.span``;
-
+// styled component to style the Container
 const ProductColor = styled.div`
 	width: 20px;
 	height: 20px;
 	border-radius: 50%;
 	background-color: ${(props) => props.color};
 `;
-
+// styled component to style the ProductSize
 const ProductSize = styled.span``;
-
+// styled component to style the PriceDetail
 const PriceDetail = styled.span`
 	flex: 1;
 	display: flex;
@@ -107,31 +107,31 @@ const PriceDetail = styled.span`
 	align-items: center;
 	justify-content: center;
 `;
-
+// styled component to style the ProductAmountContainer
 const ProductAmountContainer = styled.div`
 	display: flex;
 	align-items: center;
 	margin-bottom: 20px;
 `;
-
+// styled component to style the ProductAmount
 const ProductAmount = styled.div`
 	font-size: 24px;
 	margin: 5px;
 	${mobile({ margin: "5px 15px" })}
 `;
-
+// styled component to style the ProductPrice
 const ProductPrice = styled.div`
 	font-size: 30px;
 	font-weight: 200;
 	${mobile({ marginBottom: "20px" })}
 `;
-
+// styled component to style the Hr
 const Hr = styled.hr`
 	background-color: #eee;
 	border: none;
 	height: 1px;
 `;
-
+// styled component to style the Summary
 const Summary = styled.div`
 	flex: 1;
 	border: 0.5px solid lightgray;
@@ -139,10 +139,11 @@ const Summary = styled.div`
 	padding: 20px;
 	height: 50vh;
 `;
-
+// styled component to style the SummaryTitle
 const SummaryTitle = styled.h1`
 	font-weight: 200;
 `;
+// styled component to style the SummaryItem
 const SummaryItem = styled.div`
 	margin: 30px 0px;
 	display: flex;
@@ -150,10 +151,11 @@ const SummaryItem = styled.div`
 	font-weight: ${(props) => props.type === "total" && "500"};
 	font-size: ${(props) => props.type === "total" && "24px"};
 `;
+// styled component to style the SummaryItemText
 const SummaryItemText = styled.span``;
-
+// styled component to style the SummaryItemPrice
 const SummaryItemPrice = styled.span``;
-
+// styled component to style the Button
 const Button = styled.button`
 	width: 100%;
 	padding: 10px;
@@ -162,12 +164,12 @@ const Button = styled.button`
 	font-weight: 600;
 `;
 
-
+// React Footer page
 const Cart = () => {
 	const cart = useSelector((state) => state.cart);
 	const [stripeToken, setStripeToken] = useState(null);
 	const history = useHistory();
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 
 	const onToken = (token) => {
 		setStripeToken(token);
@@ -176,10 +178,9 @@ const Cart = () => {
 		(cart) => {
 			const makeRequest = async () => {
 				try {
-					const res = await userRequest.post("/checkout/payment", {						
+					const res = await userRequest.post("/checkout/payment", {
 						tokenId: stripeToken.id,
 						amount: cart.total * 100,
-						
 					});
 					console.log(cart.total);
 					history.push("/success", {
@@ -193,10 +194,9 @@ const Cart = () => {
 		[stripeToken, cart.total, history]
 	);
 
-	
 	const handleRemoveFromCart = (cartItem) => {
-		dispatch(removeFromCart(cartItem))
-	}
+		dispatch(removeFromCart(cartItem));
+	};
 	return (
 		<Container>
 			<Navbar />
@@ -296,5 +296,5 @@ const Cart = () => {
 		</Container>
 	);
 };
-
+//Exporting
 export default Cart;

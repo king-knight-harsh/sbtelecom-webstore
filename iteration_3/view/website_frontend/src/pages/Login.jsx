@@ -1,9 +1,11 @@
+// Importing the required libraries
 import { useState } from "react";
 import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 
+// styled component to style the Container
 const Container = styled.div`
 	width: 100vw;
 	height: 100vh;
@@ -18,7 +20,7 @@ const Container = styled.div`
 	align-items: center;
 	justify-content: center;
 `;
-
+// styled component to style the Wrapper
 const Wrapper = styled.div`
 	border: 1px solid;
 	border-radius: 20px;
@@ -27,24 +29,27 @@ const Wrapper = styled.div`
 	background-color: white;
 	${mobile({ width: "75%" })}
 `;
-
+// styled component to style the Title
 const Title = styled.h1`
 	font-size: 25px;
-	font-weight: 300;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
-
+// styled component to style the Form
 const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 `;
-
+// styled component to style the Input
 const Input = styled.input`
 	flex: 1;
 	min-width: 40%;
 	margin: 10px 0px;
 	padding: 10px;
 `;
-
+// styled component to style the Button
 const Button = styled.button`
 	width: 40%;
 	border: none;
@@ -58,18 +63,11 @@ const Button = styled.button`
         cursor:not-allowed;
     }
 `;
-
-const Link = styled.a`
-	margin: 5px 0px;
-	font-size: 12px;
-	text-decoration: underline;
-	cursor: pointer; ;
-`;
-
+// styled component to style the Error
 const Error = styled.span`
   color: red;
 `;
-
+// React Login page
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -98,13 +96,11 @@ const Login = () => {
 					<Button onClick={handleClick} disabled={isFetching}>
 						LOGIN
 					</Button>
-					{error && <Error>Something went wrong...</Error>}
-					<Link>DO YOU NOT REMEMBER THE PASSWORD?</Link>
-					<Link>CREATE A NEW ACCOUNT</Link>
+					{error && <Error>Email and password did not matched, please try again</Error>}
 				</Form>
 			</Wrapper>
 		</Container>
 	);
 };
-
+//Exporting
 export default Login;

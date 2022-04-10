@@ -1,23 +1,19 @@
 import "./userList.css";
 import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
+import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllUsers} from "../../redux/apiCalls";
+import { useState } from "react";
 
 export default function UserList() {
+  const [data, setData] = useState(userRows);
 
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.users.users);
-
-  useEffect(() => {
-    getAllUsers(dispatch);
-  }, [dispatch]);
-
+  const handleDelete = (id) => {
+    setData(data.filter((item) => item.id !== id));
+  };
   
   const columns = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "id", headerName: "ID", width: 90 },
     {
       field: "user",
       headerName: "User",
@@ -49,11 +45,13 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/users/" + params.row._id}>
+            <Link to={"/user/" + params.row.id}>
               <button className="userListEdit">Edit</button>
             </Link>
             <DeleteOutline
-              className="userListDelete"/>
+              className="userListDelete"
+              onClick={() => handleDelete(params.row.id)}
+            />
           </>
         );
       },
@@ -63,10 +61,9 @@ export default function UserList() {
   return (
     <div className="userList">
       <DataGrid
-        rows={user}
+        rows={data}
         disableSelectionOnClick
         columns={columns}
-        getRowId={(row) => row._id}
         pageSize={8}
         checkboxSelection
       />

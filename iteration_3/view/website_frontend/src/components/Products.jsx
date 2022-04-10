@@ -1,15 +1,17 @@
+// Importing the required libraries
 import styled from "styled-components";
 import Product from "./Product";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+// styled component to style the Container
 const Container = styled.div`
 	padding: 20px;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
 `;
-
+// React Category Footer Products
 const Products = ({ cat, filters, sort }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -65,5 +67,5 @@ const Products = ({ cat, filters, sort }) => {
       </Container>
     );
   };
-  
+  //Exporting
   export default Products;

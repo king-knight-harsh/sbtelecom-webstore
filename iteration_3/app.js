@@ -2,6 +2,8 @@
  * Script to import all the required packages, middleware, models
  * Script to create express server and connecting to the mongoDB server
  */
+
+// Importing the required libraries
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
@@ -12,9 +14,7 @@ const productRoute = require("./routes/product");
 const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes/order");
 const stripeRoute = require("./routes/stripe");
-
 const database = require("./utils/database");
-
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -60,7 +60,7 @@ process.on("SIGINT", () => {
 		console.log(msg);
 	});
 });
-
+// creating the server
 createServer();
-
+//Exporting the app
 module.exports = app;

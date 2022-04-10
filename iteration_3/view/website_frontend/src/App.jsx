@@ -1,3 +1,4 @@
+// Importing the required files
 import Product from "./pages/Product";
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
@@ -13,7 +14,7 @@ import {
 import Success from "./pages/Success";
 import { useSelector } from "react-redux";
 
-
+// Creating the react app with proper link
 const App = () => {
   const user = useSelector((state) => state.user.currentUser);
   return (
@@ -42,5 +43,5 @@ const App = () => {
     </Router>
   );
 };
-
+// exporting the app
 export default App;

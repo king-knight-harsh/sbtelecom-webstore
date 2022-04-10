@@ -1,7 +1,9 @@
+// Importing the required libraries
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+//cart slice for adding items and deleting items in the cart
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -32,6 +34,6 @@ const cartSlice = createSlice({
     }
   },
 });
-
+// Exporting 
 export const { addProduct, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;

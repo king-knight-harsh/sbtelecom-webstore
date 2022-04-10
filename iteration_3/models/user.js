@@ -14,7 +14,6 @@ const {
  * Creating the userSchema with parameter as follows:
  * username: String first name of the user
  * email: String email address for the user
- * userInfo: String description/information about the user
  * encry_password: String encrypted password for the user
  * salt: String salt for the password for the user
  * role: Number for role for the user (0 being the regular user || 1 being the admin user)
@@ -76,5 +75,5 @@ UserSchema.methods = {
 	  }
 	},
   };
-
+// Exporting the user schema
 module.exports = mongoose.model("User", UserSchema);

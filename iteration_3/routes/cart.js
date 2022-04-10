@@ -1,3 +1,13 @@
+/**
+ * Script with all routes related to users:
+ * /api/carts/ - route for getting a all the carts
+ * /api/carts/find/:userId - route for getting a particular cart
+ * /api/carts/:id - route for updating the cart
+ * /api/carts/:id - route for deleting the carts
+ * /api/carts/ - route for creating a cart
+ */
+
+//Importing the express library
 const router = require("express").Router();
 const {
 	createCart,
@@ -13,7 +23,6 @@ const {
 } = require("../controllers/verifyToken");
 
 //CREATE
-
 router.post("/", verifyToken, createCart);
 
 //UPDATE
@@ -26,7 +35,6 @@ router.delete("/:id", verifyTokenAndAuthorization, removeCart);
 router.get("/find/:userId", verifyTokenAndAuthorization, getUserCart);
 
 //GET ALL
-
 router.get("/", verifyTokenAndAdmin, getAllCarts);
 
 module.exports = router;

@@ -74,7 +74,13 @@ exports.updateUser = (req, res) => {
 		}
 	);
 };
-
+/**
+ * Callback method for remove a particular user
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to save user in the database
+ * @return user: Successful attempt - JSON response with details related to the user
+ */
 exports.removeUser = async (req, res) => {
 	try {
 		await User.findByIdAndDelete(req.params.id);
@@ -88,6 +94,12 @@ exports.removeUser = async (req, res) => {
 	}
 };
 
+/**
+ * Callback method for get a particular user
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return user: Successful attempt - JSON response with details related to the user
+ */
 exports.findUser = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id);
@@ -102,7 +114,12 @@ exports.findUser = async (req, res) => {
 	}
 };
 
-
+/**
+ * Callback method for getting all the users
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return user: Successful attempt - JSON response with details related to the users
+ */
 exports.findAllUser = async (req, res) => {
 	const query = req.query.new;
 	try {
@@ -118,32 +135,37 @@ exports.findAllUser = async (req, res) => {
 		);
 	}
 };
-
+/**
+ * Callback method for getting the stats related to the users
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return user: Successful attempt - JSON response with details related to the users
+ */
 exports.getUserStats = async (req, res) => {
-    const date = new Date();
-    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
-  
-    try {
-      const data = await User.aggregate([
-        { $match: { createdAt: { $gte: lastYear } } },
-        {
-          $project: {
-            month: { $month: "$createdAt" },
-          },
-        },
-        {
-          $group: {
-            _id: "$month",
-            total: { $sum: 1 },
-          },
-        },
-      ]);
-      res.status(200).json(data)
-    } catch (err) {
+	const date = new Date();
+	const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+	try {
+		const data = await User.aggregate([
+			{ $match: { createdAt: { $gte: lastYear } } },
+			{
+				$project: {
+					month: { $month: "$createdAt" },
+				},
+			},
+			{
+				$group: {
+					_id: "$month",
+					total: { $sum: 1 },
+				},
+			},
+		]);
+		res.status(200).json(data);
+	} catch (err) {
 		return customError.customErrorMessage(
 			res,
 			404,
 			"NO USER FOUND IN THE DATABASE"
 		);
 	}
-  }
+};

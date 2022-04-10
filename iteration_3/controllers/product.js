@@ -1,3 +1,8 @@
+/**
+ * Script with logic to the product routes
+ */
+
+//Importing the Product models from models folder
 const Product = require("../models/Product");
 //Importing common code snippet from common.js
 const customError = require("../utils/common");
@@ -23,7 +28,13 @@ exports.createProduct = async (req, res) => {
 		);
 	}
 };
-
+/**
+ * Callback method for updating a product in the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to update the order from the database
+ * @return product: Successful attempt - JSON response with details related to the product
+ */
 exports.updateProduct = async (req, res) => {
 	try {
 		const updatedProduct = await Product.findByIdAndUpdate(
@@ -43,7 +54,13 @@ exports.updateProduct = async (req, res) => {
 		);
 	}
 };
-
+/**
+ * Callback method for deleting a product from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to delete order in the database
+ * @return product: Successful attempt - JSON response with details related to the product
+ */
 exports.deleteProduct = async (req, res) => {
 	try {
 		await Product.findByIdAndDelete(req.params.id);
@@ -57,7 +74,13 @@ exports.deleteProduct = async (req, res) => {
 		);
 	}
 };
-
+/**
+ * Callback method for getting a particular product from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to get the order from the database
+ * @return product: Successful attempt - JSON response with details related to the product
+ */
 exports.getProduct = async (req, res) => {
 	try {
 		const product = await Product.findById(req.params.id);
@@ -71,7 +94,13 @@ exports.getProduct = async (req, res) => {
 		);
 	}
 };
-
+/**
+ * Callback method for getting all the products from the database
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to get any products from the database
+ * @return product: Successful attempt - JSON response with details related to the product
+ */
 exports.getAllProducts = async (req, res) => {
 	const qNew = req.query.new;
 	const qCategory = req.query.category;

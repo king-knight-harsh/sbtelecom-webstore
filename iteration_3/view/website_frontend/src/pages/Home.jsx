@@ -1,3 +1,4 @@
+// Importing the required libraries
 import React from "react";
 import Announcement from "../components/Announcement";
 import Categories from "../components/Categories";
@@ -7,13 +8,10 @@ import Newsletter from "../components/Newsletter";
 import Products from "../components/Products";
 import { Slider } from "../components/Slider";
 
-
-
+// React  Home page
 const Home = () => {
-	
 	return (
 		<div>
-			
 			<Announcement />
 			<Navbar />
 			<Slider />
@@ -22,9 +20,7 @@ const Home = () => {
 			<Newsletter />
 			<Footer />
 		</div>
-		
 	);
-	
 };
-
+//Exporting
 export default Home;

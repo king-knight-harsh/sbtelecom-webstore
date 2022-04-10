@@ -1,3 +1,4 @@
+//fake data
 export const sliderItems = [
 	{
 		id: 1,

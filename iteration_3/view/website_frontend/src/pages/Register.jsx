@@ -1,9 +1,11 @@
+// Importing the required libraries
 import { useState } from "react";
 import styled from "styled-components";
 import { register } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 
+// styled component to style the Container
 const Container = styled.div`
 	width: 100vw;
 	height: 100vh;
@@ -18,7 +20,7 @@ const Container = styled.div`
 	align-items: center;
 	justify-content: center;
 `;
-
+// styled component to style the Wrapper
 const Wrapper = styled.div`
 	width: 20%;
 	padding: 20px;
@@ -26,7 +28,7 @@ const Wrapper = styled.div`
 	border-radius: 20px;
 	${mobile({ width: "75%" })}
 `;
-
+// styled component to style the Title
 const Title = styled.h1`
 	font-size: 34px;
 	font-weight: 900;
@@ -34,13 +36,13 @@ const Title = styled.h1`
 	align-items: center;
 	justify-content: center;
 `;
-
+// styled component to style the Form
 const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
 `;
-
+// styled component to style the Input
 const Input = styled.input`
 	border-radius: 5px;
 	flex: 1;
@@ -48,12 +50,12 @@ const Input = styled.input`
 	margin: 20px 10px 0px 0px;
 	padding: 10px;
 `;
-
+// styled component to style the Agreement
 const Agreement = styled.span`
 	font-size: 12px;
 	margin: 20px 0px;
 `;
-
+// styled component to style the Button
 const Button = styled.button`
 	width: 100%;
 	border-radius: 5px;
@@ -68,11 +70,11 @@ const Button = styled.button`
 	align-items: center;
 	justify-content: center;
 `;
-
+// styled component to style the Error
 const Error = styled.span`
 	color: red;
 `;
-
+// React Register page
 const Register = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -111,11 +113,11 @@ const Register = () => {
 					<Button onClick={handleClick} disabled={isFetching}>
 						CREATE
 					</Button>
-					{error && <Error>Something went wrong...</Error>}
+					{error && <Error>Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!</Error>}
 				</Form>
 			</Wrapper>
 		</Container>
 	);
 };
-
+//Exporting
 export default Register;

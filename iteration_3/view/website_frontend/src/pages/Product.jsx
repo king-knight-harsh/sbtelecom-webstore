@@ -1,3 +1,4 @@
+// Importing the required libraries
 import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
@@ -11,43 +12,45 @@ import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch } from "react-redux";
 
+// styled component to style the Container
 const Container = styled.div``;
-
+// styled component to style the Wrapper
 const Wrapper = styled.div`
 	padding: 50px;
 	display: flex;
 	${mobile({ padding: "10px", flexDirection: "column" })}
 `;
+// styled component to style the ImgContainer
 const ImgContainer = styled.div`
 	flex: 1px;
 `;
-
+// styled component to style the Image
 const Image = styled.img`
 	width: 100%;
 	height: 90vh;
 	object-fit: cover;
 	${mobile({ height: "40vh" })}
 `;
-
+// styled component to style the InfoContainer
 const InfoContainer = styled.div`
 	flex: 1px;
 	padding: 0px 50px;
 	${mobile({ padding: "10px" })}
 `;
-
+// styled component to style the Title
 const Title = styled.h1`
 	font-weight: 400;
 `;
-
+// styled component to style the Desc
 const Desc = styled.p`
 	margin: 20px 0px;
 `;
-
+// styled component to style the Price
 const Price = styled.span`
 	font-weight: 100;
 	font-size: 40px;
 `;
-
+// styled component to style the FilterContainer
 const FilterContainer = styled.div`
 	width: 50%;
 	margin: 30px 0px;
@@ -55,17 +58,17 @@ const FilterContainer = styled.div`
 	justify-content: space-between;
 	${mobile({ width: "100%" })}
 `;
-
+// styled component to style the Filter
 const Filter = styled.div`
 	display: flex;
 	align-items: center;
 `;
-
+// styled component to style the FilterTitle
 const FilterTitle = styled.span`
 	font-size: 20px;
 	font-weight: 200;
 `;
-
+// styled component to style the FilterColor
 const FilterColor = styled.div`
 	width: 20px;
 	height: 20px;
@@ -74,14 +77,14 @@ const FilterColor = styled.div`
 	margin: 0px 5px;
 	cursor: pointer;
 `;
-
+// styled component to style the FilterSize
 const FilterSize = styled.select`
 	margin-left: 10px;
 	padding: 5px;
 `;
-
+// styled component to style the FilterSizeOption
 const FilterSizeOption = styled.option``;
-
+// styled component to style the AddContainer
 const AddContainer = styled.div`
 	width: 50%;
 	display: flex;
@@ -89,13 +92,13 @@ const AddContainer = styled.div`
 	justify-content: space-between;
 	${mobile({ width: "100%" })}
 `;
-
+// styled component to style the AmountContainer
 const AmountContainer = styled.div`
 	display: flex;
 	align-items: center;
 	font-weight: 700;
 `;
-
+// styled component to style the Amount
 const Amount = styled.span`
 	width: 30px;
 	height: 30px;
@@ -106,7 +109,7 @@ const Amount = styled.span`
 	justify-content: center;
 	margin: 5px;
 `;
-
+// styled component to style the Button
 const Button = styled.button`
 	padding: 15px;
 	border: 2px solid teal;
@@ -164,7 +167,11 @@ const Product = () => {
 						<Filter>
 							<FilterTitle>Color</FilterTitle>
 							{product.color?.map((color) => (
-								<FilterColor color={color} key={color} onClick={() => setColor(color)} />
+								<FilterColor
+									color={color}
+									key={color}
+									onClick={() => setColor(color)}
+								/>
 							))}
 						</Filter>
 						<Filter>
@@ -180,7 +187,7 @@ const Product = () => {
 						<AmountContainer>
 							<Remove onClick={() => handleQuantity("dec")} />
 							<Amount>{quantity}</Amount>
-							<Add onClick={() => handleQuantity("inc")}/>
+							<Add onClick={() => handleQuantity("inc")} />
 						</AmountContainer>
 						<Button onClick={handleClick}>ADD TO CART</Button>
 					</AddContainer>
@@ -192,5 +199,5 @@ const Product = () => {
 		</Container>
 	);
 };
-
+//Exporting
 export default Product;

@@ -1,8 +1,8 @@
 /**
  * Script with all routes related to authentication:
- * /api/signup - route for signup new user
- * /api/signIn - route for signIn the user
- * /api/signOut - route for signOut the user
+ * /api/login - route for signup new user
+ * /api/register - route for signIn the user
+ * /api/logout - route for signOut the user
  */
 
 //Importing common code snippet from common.js
@@ -12,12 +12,20 @@ var express = require("express");
 //Using the routers for the router
 var router = express.Router();
 const User = require("../models/User");
-const CryptoJS = require("crypto-js");
+//Importing jsonwebtoken
 const jwt = require("jsonwebtoken");
+//Importing express-jsonwebtoken
 var expressJwt = require("express-jwt");
+//Importing express-validator
 const { validationResult } = require("express-validator");
 
-//REGISTER
+/**
+ * Call method for registering a new user
+ * @param {*} req - request from client side
+ * @param {*} res - response from the server side
+ * @return err: Unsuccessful attempt to save user in the database
+ * @return user: Successful attempt - JSON response with name, email address and id for the user
+ */
 exports.register = (req, res) => {
 	// Validating the request
 	const errors = validationResult(req);

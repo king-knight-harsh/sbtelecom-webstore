@@ -1,8 +1,10 @@
+// Importing the required libraries
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { userRequest } from "../requestMethods";
 
+// React success of the payment 
 const Success = () => {
   const location = useLocation();
   const data = location.state.stripeData;
@@ -45,5 +47,5 @@ const Success = () => {
     </div>
   );
 };
-
+//Exporting
 export default Success;

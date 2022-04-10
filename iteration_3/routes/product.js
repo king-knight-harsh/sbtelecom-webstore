@@ -1,8 +1,15 @@
+/**
+ * Script with all routes related to users:
+ * /api/products/ - route for getting a all the product
+ * /api/products/find/:id - route for getting a particular product
+ * /api/products/:id - route for updating the product
+ * /api/products/:id - route for deleting the product
+ * /api/products/ - route for creating a product
+ */
+
+//Importing the express library
 const router = require("express").Router();
-const Product = require("../models/Product");
 const {
-	verifyToken,
-	verifyTokenAndAuthorization,
 	verifyTokenAndAdmin,
 } = require("../controllers/verifyToken");
 
@@ -13,8 +20,6 @@ const {
 	getProduct,
     getAllProducts
 } = require("../controllers/product");
-//Importing common code snippet from common.js
-const customError = require("../utils/common");
 
 //CREATE
 router.post("/", verifyTokenAndAdmin, createProduct);

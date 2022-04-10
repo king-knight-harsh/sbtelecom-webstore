@@ -1,7 +1,8 @@
 {
-  "name": "new",
+  "name": "sb_telecom_webstore_frontend_website",
   "version": "0.1.0",
   "private": true,
+  "author": "Harsh and Maria",
   "dependencies": {
     "@iconify/react": "^3.2.1",
     "@material-ui/core": "^4.12.3",
