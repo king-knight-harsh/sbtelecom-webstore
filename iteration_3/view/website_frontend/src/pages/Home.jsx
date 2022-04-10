@@ -8,10 +8,12 @@ import Products from "../components/Products";
 import { Slider } from "../components/Slider";
 
 
-  
+
 const Home = () => {
+	
 	return (
 		<div>
+			
 			<Announcement />
 			<Navbar />
 			<Slider />
@@ -20,7 +22,9 @@ const Home = () => {
 			<Newsletter />
 			<Footer />
 		</div>
+		
 	);
+	
 };
 
 export default Home;

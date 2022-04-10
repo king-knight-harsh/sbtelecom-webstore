@@ -80,9 +80,10 @@ const Register = () => {
 	const dispatch = useDispatch();
 	const { isFetching, error } = useSelector((state) => state.user);
 
-	const handleClick = (e) => {
+	const handleClick = async (e) => {
 		e.preventDefault();
-		register(dispatch, { username, email, password });
+		await register(dispatch, { username, email, password });
+		window.location.reload(false);
 	};
 
 	return (
