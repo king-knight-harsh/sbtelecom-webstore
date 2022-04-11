@@ -20,7 +20,7 @@ folder.
 6. To stop the app on your local system press the following key combination -->
 WINDOWS & MAC USER -->        `CTRL+C`           
 
-5. To run the admin dashboard stop the shopping website and run npm start for the view/admin folder 
+7. To run the admin dashboard stop the shopping website and run npm start for the view/admin folder 
 
 NOTE --> For smooth functioning of the testing we are using a cloud server for mongoDB (MongoDB ATLAS)
 Please do not change the server, as to fetch product information and performing CRUD operation it is important.
@@ -32,5 +32,10 @@ login as the admin user in the shopping website and than close it off and than s
 # AdminUser userID - hsharma@mun.ca #
 # AdminUser password - Abcd@1234    #
 #####################################
+
+For test payment -->
+Card Number -- 4242 4242 4242 4242
+expirations -- 08/24
+CVV -- 123
 
 
